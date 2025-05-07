@@ -1281,7 +1281,7 @@ object StreamPlayExtractor : StreamPlay() {
 
                         // Process each server sequentially
                         for ((type, lid, serverName) in servers) {
-                            if !type.contains("dub") {
+                            if (!type.contains("dub")) {
                                 val result = app.get("$AnimeKai/ajax/links/view?id=$lid&_=${decoder.generateToken(lid, homekey)}")
                                     .parsed<AnimeKaiResponse>().result
                                 val homekeys = getHomeKeys()
