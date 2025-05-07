@@ -1021,7 +1021,7 @@ suspend fun loadSourceNameExtractor(
             val blacklist = listOf("Driveleech", "[", "]", "MB", "GB")
             var sourceinfo = ""
             if (blacklist.any { link.source.contains(it, ignoreCase = true) }) {
-                sourceinfo = identifierMap[source]
+                sourceinfo = identifierMap[source]?.toString() ?: link.source
             } else {
                 sourceinfo = link.source
             }
