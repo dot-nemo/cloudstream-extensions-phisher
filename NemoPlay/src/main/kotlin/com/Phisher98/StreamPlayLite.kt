@@ -39,7 +39,7 @@ import com.nemo.StreamPlayExtractor.invokevidzeeMulti
 import com.nemo.StreamPlayExtractor.invokevidzeeUltra
 
 class StreamPlayLite() : StreamPlay(sharedPref) {
-    override var name = "StreamPlay-Lite"
+    override var name = "NemoPlay-Lite"
 
     override suspend fun loadLinks(
         data: String,
