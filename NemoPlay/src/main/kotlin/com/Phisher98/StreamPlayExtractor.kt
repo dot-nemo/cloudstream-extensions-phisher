@@ -722,8 +722,8 @@ object StreamPlayExtractor : StreamPlay() {
         } ?: ""
         callback(
             newExtractorLink(
-                "⌜ Anizone ⌟",
-                "⌜ Anizone ⌟",
+                "⌜ AniZone ⌟",
+                "⌜ AniZone ⌟",
                 url = m3u8,
                 INFER_TYPE
             ) {
@@ -939,7 +939,7 @@ object StreamPlayExtractor : StreamPlay() {
                         if (sourceUrl.startsWith("http")) {
                                 val sourcename = sourceUrl.getHost()
                                 loadCustomExtractor(
-                                    "⌜ AllAnime ⌟ | ${sourcename.uppercase()}",
+                                    "⌜ AllAnime ⌟ | ${sourcename.capitalize()}",
                                     sourceUrl
                                         ?: "",
                                     "",
@@ -1062,7 +1062,7 @@ object StreamPlayExtractor : StreamPlay() {
                 val source = match?.groupValues?.getOrNull(1) ?: "Unknown"
                 val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
                 loadCustomExtractor(
-                    "⌜ AnimePahe ⌟ | ${source.uppercase()}",
+                    "⌜ AnimePahe ⌟ | ${source.capitalize()}",
                     href,
                     "",
                     subtitleCallback,
@@ -1452,7 +1452,7 @@ object StreamPlayExtractor : StreamPlay() {
                             )
                             if (dubtype.equals("sub", ignoreCase = true))
                                 M3u8Helper.generateM3u8(
-                                    "⌜ HiAnime ⌟ | ${serverName.uppercase()}",
+                                    "⌜ HiAnime ⌟ | ${serverName.capitalize()}",
                                     source.url,
                                     mainUrl,
                                     headers = m3u8headers
