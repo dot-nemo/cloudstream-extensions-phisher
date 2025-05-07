@@ -251,15 +251,14 @@ class StreamPlayAnime : MainAPI() {
         val hianimeUrl = zoro?.values?.firstNotNullOfOrNull { it["url"] }
         val kaasSlug = malsync?.KickAssAnime?.values?.firstNotNullOfOrNull { it["identifier"] }
 
+
+        malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }?.let {
+            invokeAnimepahe(it, episode, subtitleCallback, callback)
+        }
         runAllAsync(
-            {
-                malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }?.let {
-                    invokeAnimepahe(it, episode, subtitleCallback, callback)
-                }
-            },
+            { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
             { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback) },
             { invokeAnizone(jpTitle, episode, callback) },
-            { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
             { invokeHianime(zoro?.keys?.toList(), hianimeUrl, episode, subtitleCallback, callback) },
         )
         return true
