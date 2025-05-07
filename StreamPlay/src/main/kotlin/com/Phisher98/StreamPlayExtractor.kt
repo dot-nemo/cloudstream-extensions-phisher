@@ -1052,27 +1052,29 @@ object StreamPlayExtractor : StreamPlay() {
         document.select("#resolutionMenu button")
             .map {
                 val dubText = it.select("span").text().lowercase()
-                val type = if ("eng" in dubText) "DUB" else "SUB"
+                val type = "SUB"
+                if ("eng" !in dubText) {
+                    val qualityRegex = Regex("""(.+?)\s+·\s+(\d{3,4}p)""")
+                    val text = it.text()
+                    val match = qualityRegex.find(text)
 
-                val qualityRegex = Regex("""(.+?)\s+·\s+(\d{3,4}p)""")
-                val text = it.text()
-                val match = qualityRegex.find(text)
+                    val source = match?.groupValues?.getOrNull(1)?.trim() ?: "Unknown"
+                    val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p")?.toIntOrNull()
+                        ?: Qualities.Unknown.value
 
-                val source = match?.groupValues?.getOrNull(1)?.trim() ?: "Unknown"
-                val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p")?.toIntOrNull()
-                    ?: Qualities.Unknown.value
-
-                val href = it.attr("data-src")
-                if ("kwik.si" in href) {
-                    loadCustomExtractor(
-                        "Animepahe $source [$type]",
-                        href,
-                        "",
-                        subtitleCallback,
-                        callback,
-                        quality
-                    )
+                    val href = it.attr("data-src")
+                    if ("kwik.si" in href) {
+                        loadCustomExtractor(
+                            "Animepahe $source [$type]",
+                            href,
+                            "",
+                            subtitleCallback,
+                            callback,
+                            quality
+                        )
+                    }
                 }
+
             }
 
         document.select("div#pickDownload > a").amap {
@@ -1080,13 +1082,11 @@ object StreamPlayExtractor : StreamPlay() {
 
             val href = it.attr("href")
             var type = "SUB"
-            if(it.select("span").text().contains("eng"))
-                type="DUB"
-            val text = it.text()
-            val match = qualityRegex.find(text)
-            val source = match?.groupValues?.getOrNull(1) ?: "Unknown"
-            val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
-            if (type != "DUB")
+            if(!it.select("span").text().contains("eng")) {
+                val text = it.text()
+                val match = qualityRegex.find(text)
+                val source = match?.groupValues?.getOrNull(1) ?: "Unknown"
+                val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
                 loadCustomExtractor(
                     "Animepahe Pahe $source [$type]",
                     href,
@@ -1095,6 +1095,7 @@ object StreamPlayExtractor : StreamPlay() {
                     callback,
                     quality.toIntOrNull()
                 )
+            }
         }
     }
 
