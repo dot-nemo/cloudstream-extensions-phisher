@@ -2,7 +2,7 @@
 
 import org.jetbrains.kotlin.konan.properties.Properties
 
-version = 4
+version = ${{ github.run_number }}
 android {
     buildFeatures {
         buildConfig = true
