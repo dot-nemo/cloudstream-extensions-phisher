@@ -40,7 +40,7 @@ subprojects {
     }
 
     android {
-        namespace = "com.phisher98"
+        namespace = "com.nemo"
 
         defaultConfig {
             minSdk = 21

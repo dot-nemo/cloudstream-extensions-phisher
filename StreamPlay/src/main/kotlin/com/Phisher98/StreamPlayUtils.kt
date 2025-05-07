@@ -1,18 +1,18 @@
-package com.phisher98
+package com.nemo
 
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import app.cash.quickjs.QuickJs
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.phisher98.DumpUtils.queryApi
-import com.phisher98.StreamPlay.Companion.anilistAPI
-import com.phisher98.StreamPlay.Companion.filmxyAPI
-import com.phisher98.StreamPlay.Companion.fourthAPI
-import com.phisher98.StreamPlay.Companion.gdbot
-import com.phisher98.StreamPlay.Companion.hdmovies4uAPI
-import com.phisher98.StreamPlay.Companion.malsyncAPI
-import com.phisher98.StreamPlay.Companion.thrirdAPI
+import com.nemo.DumpUtils.queryApi
+import com.nemo.StreamPlay.Companion.anilistAPI
+import com.nemo.StreamPlay.Companion.filmxyAPI
+import com.nemo.StreamPlay.Companion.fourthAPI
+import com.nemo.StreamPlay.Companion.gdbot
+import com.nemo.StreamPlay.Companion.hdmovies4uAPI
+import com.nemo.StreamPlay.Companion.malsyncAPI
+import com.nemo.StreamPlay.Companion.thrirdAPI
 import com.google.gson.Gson
 import com.lagradost.api.Log
 import com.lagradost.cloudstream3.*

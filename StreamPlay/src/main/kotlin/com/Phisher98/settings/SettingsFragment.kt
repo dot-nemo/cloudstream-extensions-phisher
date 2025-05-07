@@ -1,4 +1,4 @@
-package com.phisher98.settings
+package com.nemo.settings
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
@@ -12,8 +12,8 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.phisher98.BuildConfig
-import com.phisher98.StreamPlayPlugin
+import com.nemo.BuildConfig
+import com.nemo.StreamPlayPlugin
 import com.lagradost.cloudstream3.CommonActivity.showToast
 
 class SettingsFragment(

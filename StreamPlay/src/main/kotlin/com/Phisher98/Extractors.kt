@@ -1,8 +1,8 @@
-package com.phisher98
+package com.nemo
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.phisher98.StreamPlay.Companion.animepaheAPI
+import com.nemo.StreamPlay.Companion.animepaheAPI
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -2038,5 +2038,3 @@ class Gofile : ExtractorApi() {
             ?: Qualities.Unknown.value
     }
 }
-
-

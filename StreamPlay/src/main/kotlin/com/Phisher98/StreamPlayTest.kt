@@ -1,14 +1,14 @@
-package com.phisher98
+package com.nemo
 
 
 import android.content.SharedPreferences
-import com.phisher98.StreamPlayExtractor.invokeVidSrcXyz
+import com.nemo.StreamPlayExtractor.invokeVidSrcXyz
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.argamap
 import com.lagradost.cloudstream3.runAllAsync
 import com.lagradost.cloudstream3.utils.AppUtils
 import com.lagradost.cloudstream3.utils.ExtractorLink
-import com.phisher98.StreamPlayExtractor.invokeExtramovies
+import com.nemo.StreamPlayExtractor.invokeExtramovies
 
 class StreamPlayTest(sharedPreferences:SharedPreferences?=null) : StreamPlay(sharedPreferences) {
     override var name = "StreamPlay-Test"

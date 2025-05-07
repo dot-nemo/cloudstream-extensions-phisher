@@ -1,9 +1,9 @@
-package com.phisher98
+package com.nemo
 
 import android.annotation.SuppressLint
 import com.google.gson.Gson
-import com.phisher98.StreamPlayTorrent.Companion.AnimetoshoAPI
-import com.phisher98.StreamPlayTorrent.Companion.TRACKER_LIST_URL
+import com.nemo.StreamPlayTorrent.Companion.AnimetoshoAPI
+import com.nemo.StreamPlayTorrent.Companion.TRACKER_LIST_URL
 import com.lagradost.cloudstream3.amap
 import com.lagradost.cloudstream3.app
 import com.lagradost.cloudstream3.utils.ExtractorLink
