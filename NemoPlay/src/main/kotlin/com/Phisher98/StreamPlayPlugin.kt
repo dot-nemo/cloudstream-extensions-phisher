@@ -27,8 +27,8 @@ import com.lagradost.cloudstream3.plugins.Plugin
 class StreamPlayPlugin: Plugin() {
     override fun load(context: Context) {
         val sharedPref = context.getSharedPreferences("StreamPlay", Context.MODE_PRIVATE)
-        //registerMainAPI(StreamPlay(sharedPref))
-        //registerMainAPI(StreamPlayLite())
+        registerMainAPI(StreamPlay(sharedPref))
+        registerMainAPI(StreamPlayLite())
         //registerMainAPI(StreamPlayTorrent())
         //registerMainAPI(StreamPlayTest(sharedPref))
         registerMainAPI(StreamPlayAnime())

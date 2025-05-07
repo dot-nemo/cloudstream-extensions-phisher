@@ -133,9 +133,6 @@ class StreamPlayLite() : StreamPlay(sharedPref) {
                 )
             },
             {
-                if (!res.isAnime) invokeNowTv(res.id, res.imdbId, res.season, res.episode, callback)
-            },
-            {
                 if (!res.isAnime) invokeAoneroom(
                     res.title, res.airedYear
                         ?: res.year, res.season, res.episode, subtitleCallback, callback

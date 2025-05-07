@@ -665,15 +665,6 @@ open class StreamPlay(val sharedPref: SharedPreferences? = null) : TmdbProvider(
         invokeDahmerMovies(dahmerMoviesAPI,res.title, res.year, res.season, res.episode, callback)
     },
     {
-        if (!res.isAnime) invokeNowTv(
-            res.id,
-            res.imdbId,
-            res.season,
-            res.episode,
-            callback
-        )
-    },
-    {
         if (!res.isAnime) invokeRidomovies(
             res.id,
             res.imdbId,
@@ -839,9 +830,6 @@ open class StreamPlay(val sharedPref: SharedPreferences? = null) : TmdbProvider(
     {
         if (!res.isAnime) invokeMoflix(res.id, res.season, res.episode, callback)
     },
-            {
-                if (!res.isAnime) invokeTom(res.id, res.season, res.episode,subtitleCallback,callback)
-            },
     {
         if (!res.isAnime) invokeZoechip(
             res.title,

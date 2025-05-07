@@ -2072,6 +2072,7 @@ suspend fun invokeExternalSource(
         val jsonObject = JSONObject().put("sources", sourcesJsonArray)
         listOf(jsonObject.toString()).forEach {
             val parsedSources = tryParseJson<ExternalSourcesWrapper>(it)?.sources ?: return@forEach
+            var identifier = 0
             parsedSources.forEach org@{ source ->
                 val format =
                     if (source.type == "video/mp4") ExtractorLinkType.VIDEO else ExtractorLinkType.M3U8
@@ -2081,13 +2082,14 @@ suspend fun invokeExternalSource(
                 callback.invoke(
                     ExtractorLink(
                         "⌜ SuperStream ⌟ ${source.size}",
-                        "⌜ SuperStream ⌟ [Server ${index + 1}] ${source.size}",
+                        "⌜ SuperStream ⌟ | Server ${index + 1} | ${identifier}",
                         source.file?.replace("\\/", "/") ?: return@org,
                         "",
                         getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label),
                         type = format,
                     )
                 )
+                identifier++
             }
         }
     }
