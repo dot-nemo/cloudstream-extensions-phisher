@@ -1452,7 +1452,7 @@ object StreamPlayExtractor : StreamPlay() {
                             )
                             if (dubtype.equals("sub", ignoreCase = true))
                                 M3u8Helper.generateM3u8(
-                                    "⌜ HiAnime ⌟ | ${serverName.capitalize()}",
+                                    "⌜ HiAnime ⌟ | ${serverName.capitalize()} ${server.third.uppercase()}",
                                     source.url,
                                     mainUrl,
                                     headers = m3u8headers
