@@ -973,8 +973,8 @@ object StreamPlayExtractor : StreamPlay() {
                                     server.hls == null -> {
                                         callback.invoke(
                                             newExtractorLink(
-                                                "Allanime ${host.capitalize()}",
-                                                "Allanime ${host.capitalize()}",
+                                                "⌜ AllAnime ⌟ | ${host.uppercase()}",
+                                                "⌜ AllAnime ⌟ | ${host.uppercase()}",
                                                 server.link,
                                                 INFER_TYPE
                                             )

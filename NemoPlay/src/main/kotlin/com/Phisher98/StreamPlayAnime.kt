@@ -256,8 +256,7 @@ class StreamPlayAnime : MainAPI() {
                 malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }?.let {
                     invokeAnimepahe(it, episode, subtitleCallback, callback)
                 }
-            })
-        runAllAsync(
+            },
             { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback) },
             { invokeAnizone(jpTitle, episode, callback) },
             { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
