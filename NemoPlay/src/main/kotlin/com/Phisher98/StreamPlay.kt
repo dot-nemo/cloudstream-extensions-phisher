@@ -105,7 +105,7 @@ import kotlin.math.roundToInt
 
 @Suppress("ConstPropertyName", "PropertyName")
 open class StreamPlay(val sharedPref: SharedPreferences? = null) : TmdbProvider() {
-    override var name = "StreamPlay"
+    override var name = "NemoPlay"
     override val hasMainPage = true
     override val instantLinkLoading = true
     override val useMetaLoadResponse = true

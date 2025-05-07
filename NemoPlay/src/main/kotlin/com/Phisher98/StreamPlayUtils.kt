@@ -104,6 +104,8 @@ val mimeType = arrayOf(
     "video/x-msvideo"
 )
 
+val identifierMap = HashMap<String, Int>()
+
 fun Document.getMirrorLink(): String? {
     return this.select("div.mb-4 a").randomOrNull()
         ?.attr("href")
@@ -1015,10 +1017,18 @@ suspend fun loadSourceNameExtractor(
 ) {
     loadExtractor(url, referer, subtitleCallback) { link ->
         CoroutineScope(Dispatchers.IO).launch {
+            identifierMap[source] = identifierMap.getOrDefault(source, 0) + 1
+            val blacklist = listOf("Driveleech", "[", "]", "MB", "GB")
+            var sourceinfo = ""
+            if (blacklist.any { link.source.contains(it, ignoreCase = true) }) {
+                sourceinfo = identifierMap[source]
+            } else {
+                sourceinfo = link.source
+            }
             callback.invoke(
                 newExtractorLink(
-                    "$source[${link.source}]",
-                    "$source[${link.source}]",
+                    "$source | ${sourceinfo}",
+                    "$source | ${sourceinfo}",
                     link.url,
                 ) {
                     this.quality = link.quality
