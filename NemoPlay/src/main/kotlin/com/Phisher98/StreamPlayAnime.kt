@@ -25,7 +25,7 @@ import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.TvType
 import com.lagradost.cloudstream3.addEpisodes
 import com.lagradost.cloudstream3.app
-import com.lagradost.cloudstream3.argamap
+import com.lagradost.cloudstream3.runAllAsync
 import com.lagradost.cloudstream3.mainPageOf
 import com.lagradost.cloudstream3.mapper
 import com.lagradost.cloudstream3.newAnimeLoadResponse
@@ -251,28 +251,16 @@ class StreamPlayAnime : MainAPI() {
         val hianimeUrl = zoro?.values?.firstNotNullOfOrNull { it["url"] }
         val kaasSlug = malsync?.KickAssAnime?.values?.firstNotNullOfOrNull { it["identifier"] }
 
-        argamap(
-            //{ invokeHianime(zoro?.keys?.toList(), hianimeUrl, episode, subtitleCallback, callback) },
-            //{
-            //    malsync?.animepahe?.values?.firstNotNullOfOrNull { it["title"] }?.let {
-            //        invokeMiruroanimeGogo(zoro?.keys?.toList(), it, episode, subtitleCallback, callback)
-            //    }
-            //},
+        runAllAsync(
             {
                 malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }?.let {
                     invokeAnimepahe(it, episode, subtitleCallback, callback)
                 }
             })
-         argamap(
-            //{ invokeGrani(zorotitle ?: "", episode, callback) },
-            //{
-            //    malsync?.Gogoanime?.values?.firstNotNullOfOrNull { it["url"] }?.let {
-            //        invokeAnitaku(it, episode, subtitleCallback, callback)
-            //    }
-            //},
+        runAllAsync(
+            { invokeHianime(zoro?.keys?.toList(), hianimeUrl, episode, subtitleCallback, callback) },
             //{ invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
             { invokeAnizone(jpTitle, episode, callback) },
-            //{ invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
             //{ invokeKickAssAnime(kaasSlug, episode, subtitleCallback, callback) },
             { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback) },
         )
