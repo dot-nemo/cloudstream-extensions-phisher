@@ -1051,34 +1051,6 @@ object StreamPlayExtractor : StreamPlay() {
             animeData?.find { it.episode == (episode?.plus(12) ?: episode) }?.session ?: ""
         val document=app.get("$animepaheAPI/play/$id/$session", headers).document
 
-        document.select("#resolutionMenu button")
-            .map {
-                val dubText = it.select("span").text().lowercase()
-                val type = "SUB"
-                if ("eng" !in dubText) {
-                    val qualityRegex = Regex("""(.+?)\s+·\s+(\d{3,4}p)""")
-                    val text = it.text()
-                    val match = qualityRegex.find(text)
-
-                    val source = match?.groupValues?.getOrNull(1)?.trim() ?: "Unknown"
-                    val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p")?.toIntOrNull()
-                        ?: Qualities.Unknown.value
-
-                    val href = it.attr("data-src")
-                    if ("kwik.si" in href) {
-                        loadCustomExtractor(
-                            "pahe m3u8 $source [$type]",
-                            href,
-                            "",
-                            subtitleCallback,
-                            callback,
-                            quality
-                        )
-                    }
-                }
-
-            }
-
         document.select("div#pickDownload > a").amap {
             val qualityRegex = Regex("""(.+?)\s+·\s+(\d{3,4}p)""")
 
@@ -1090,7 +1062,7 @@ object StreamPlayExtractor : StreamPlay() {
                 val source = match?.groupValues?.getOrNull(1) ?: "Unknown"
                 val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
                 loadCustomExtractor(
-                    "pahe mp4 $source [$type]",
+                    "pahe $source",
                     href,
                     "",
                     subtitleCallback,
@@ -1099,6 +1071,33 @@ object StreamPlayExtractor : StreamPlay() {
                 )
             }
         }
+
+        //document.select("#resolutionMenu button")
+        //    .map {
+        //        val dubText = it.select("span").text().lowercase()
+        //        val type = "SUB"
+        //        if ("eng" !in dubText) {
+        //            val qualityRegex = Regex("""(.+?)\s+·\s+(\d{3,4}p)""")
+        //            val text = it.text()
+        //            val match = qualityRegex.find(text)
+
+        //            val source = match?.groupValues?.getOrNull(1)?.trim() ?: "Unknown"
+        //            val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p")?.toIntOrNull()
+        //                ?: Qualities.Unknown.value
+
+        //            val href = it.attr("data-src")
+        //            if ("kwik.si" in href) {
+        //                loadCustomExtractor(
+        //                    "pahe m3u8 $source",
+        //                    href,
+        //                    "",
+        //                    subtitleCallback,
+        //                    callback,
+        //                    quality
+        //                )
+        //            }
+        //        }
+        //    }
     }
 
     suspend fun invokeGrani(
