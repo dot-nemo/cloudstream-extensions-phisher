@@ -259,14 +259,8 @@ class StreamPlayAnime : MainAPI() {
             })
         runAllAsync(
             { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback) },
-        )
-        runAllAsync(
             { invokeAnizone(jpTitle, episode, callback) },
-        )
-        runAllAsync(
             { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
-        )
-        runAllAsync(
             { invokeHianime(zoro?.keys?.toList(), hianimeUrl, episode, subtitleCallback, callback) },
         )
         return true
