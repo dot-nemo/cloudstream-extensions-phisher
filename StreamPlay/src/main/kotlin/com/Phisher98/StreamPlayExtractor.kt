@@ -722,8 +722,8 @@ object StreamPlayExtractor : StreamPlay() {
         } ?: ""
         callback(
             newExtractorLink(
-                "Anizone",
-                "Anizone",
+                "anizone",
+                "anizone",
                 url = m3u8,
                 INFER_TYPE
             ) {
@@ -892,6 +892,8 @@ object StreamPlayExtractor : StreamPlay() {
             //{ invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
             //{ gogoUrl?.let { invokeAnitaku(it, episode, subtitleCallback, callback) } },
             //{ invokeTokyoInsider(jptitle, title, episode, subtitleCallback, callback) },
+            )
+        runAllAsync(
             { invokeAnizone(jptitle, episode, callback) })
     }
 
@@ -1065,7 +1067,7 @@ object StreamPlayExtractor : StreamPlay() {
                     val href = it.attr("data-src")
                     if ("kwik.si" in href) {
                         loadCustomExtractor(
-                            "Animepahe $source [$type]",
+                            "pahe m3u8 $source [$type]",
                             href,
                             "",
                             subtitleCallback,
@@ -1088,7 +1090,7 @@ object StreamPlayExtractor : StreamPlay() {
                 val source = match?.groupValues?.getOrNull(1) ?: "Unknown"
                 val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
                 loadCustomExtractor(
-                    "Animepahe Pahe $source [$type]",
+                    "pahe mp4 $source [$type]",
                     href,
                     "",
                     subtitleCallback,
@@ -1279,20 +1281,23 @@ object StreamPlayExtractor : StreamPlay() {
 
                         // Process each server sequentially
                         for ((type, lid, serverName) in servers) {
-                            val result = app.get("$AnimeKai/ajax/links/view?id=$lid&_=${decoder.generateToken(lid, homekey)}")
-                                .parsed<AnimeKaiResponse>().result
-                            val homekeys = getHomeKeys()
-                            val iframe = extractVideoUrlFromJsonAnimekai(decoder.decodeIframeData(result, homekeys))
+                            if !type.contains("dub") {
+                                val result = app.get("$AnimeKai/ajax/links/view?id=$lid&_=${decoder.generateToken(lid, homekey)}")
+                                    .parsed<AnimeKaiResponse>().result
+                                val homekeys = getHomeKeys()
+                                val iframe = extractVideoUrlFromJsonAnimekai(decoder.decodeIframeData(result, homekeys))
 
-                            val nameSuffix = when {
-                                type.contains("soft", ignoreCase = true) -> " [Soft Sub]"
-                                type.contains("sub", ignoreCase = true) -> " [Sub]"
-                                type.contains("dub", ignoreCase = true) -> " [Dub]"
-                                else -> ""
+                                val nameSuffix = when {
+                                    type.contains("soft", ignoreCase = true) -> "[Soft Sub]"
+                                    type.contains("sub", ignoreCase = true) -> "[Sub]"
+                                    type.contains("dub", ignoreCase = true) -> "[Dub]"
+                                    else -> ""
+                                }
+
+                                val name = "animekai $serverName $nameSuffix"
+                                loadExtractor(iframe, name, subtitleCallback, callback)
+
                             }
-
-                            val name = "⌜ AnimeKai ⌟  |  $serverName  | $nameSuffix"
-                            loadExtractor(iframe, name, subtitleCallback, callback)
                         }
                     }
                 }
