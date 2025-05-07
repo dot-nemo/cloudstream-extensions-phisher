@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.konan.properties.Properties
 
 val properties = Properties()
 properties.load(project.rootProject.file("local.properties").inputStream())
-version = ${properties.getProperty("GHVERSION")}
+version = properties.getProperty("GHVERSION")
 android {
     buildFeatures {
         buildConfig = true
