@@ -870,28 +870,28 @@ object StreamPlayExtractor : StreamPlay() {
         val jptitleSlug = jptitle.createSlug()
 
         runAllAsync(
-            { malId?.let { invokeAnimetosho(it, season, episode, subtitleCallback, callback) } },
-            { invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
+            //{ malId?.let { invokeAnimetosho(it, season, episode, subtitleCallback, callback) } },
+            //{ invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
-            {
-                animepaheTitle?.let {
-                    invokeMiruroanimeGogo(
-                        zoroIds,
-                        it,
-                        episode,
-                        subtitleCallback,
-                        callback
-                    )
-                }
-            },
-            { kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
+            //{
+            //    animepaheTitle?.let {
+            //        invokeMiruroanimeGogo(
+            //            zoroIds,
+            //            it,
+            //            episode,
+            //            subtitleCallback,
+            //            callback
+            //        )
+            //    }
+            //},
+            //{ kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
             { animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } },
-            { invokeGrani(title.orEmpty(), episode, callback) },
-            { invokeGojo(aniId, jptitleSlug, episode, subtitleCallback, callback) },
-            { invokeAnichi(zorotitle,tmdbYear,episode, subtitleCallback, callback) },
-            { invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
-            { gogoUrl?.let { invokeAnitaku(it, episode, subtitleCallback, callback) } },
-            { invokeTokyoInsider(jptitle, title, episode, subtitleCallback, callback) },
+            //{ invokeGrani(title.orEmpty(), episode, callback) },
+            //{ invokeGojo(aniId, jptitleSlug, episode, subtitleCallback, callback) },
+            //{ invokeAnichi(zorotitle,tmdbYear,episode, subtitleCallback, callback) },
+            //{ invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
+            //{ gogoUrl?.let { invokeAnitaku(it, episode, subtitleCallback, callback) } },
+            //{ invokeTokyoInsider(jptitle, title, episode, subtitleCallback, callback) },
             { invokeAnizone(jptitle, episode, callback) })
     }
 
@@ -1086,15 +1086,15 @@ object StreamPlayExtractor : StreamPlay() {
             val match = qualityRegex.find(text)
             val source = match?.groupValues?.getOrNull(1) ?: "Unknown"
             val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
-
-            loadCustomExtractor(
-                "Animepahe Pahe $source [$type]",
-                href,
-                "",
-                subtitleCallback,
-                callback,
-                quality.toIntOrNull()
-            )
+            if (type != "DUB")
+                loadCustomExtractor(
+                    "Animepahe Pahe $source [$type]",
+                    href,
+                    "",
+                    subtitleCallback,
+                    callback,
+                    quality.toIntOrNull()
+                )
         }
     }
 
@@ -1267,7 +1267,7 @@ object StreamPlayExtractor : StreamPlay() {
                             .parsed<AnimeKaiResponse>()
                             .getDocument()
 
-                        val types = listOf("sub", "softsub", "dub")
+                        val types = listOf("softsub")
                         val servers = types.flatMap { type ->
                             document.select("div.server-items[data-id=$type] span.server[data-lid]").map { server ->
                                 val lid = server.attr("data-lid")
@@ -5226,7 +5226,3 @@ object StreamPlayExtractor : StreamPlay() {
 
 
 }
-
-
-
-

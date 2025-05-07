@@ -159,7 +159,7 @@ class AnimeKai : MainAPI() {
                 ?.substringBefore(")")
         val animeId = document.selectFirst("div.rate-box")?.attr("data-id")
         val subCount = document.selectFirst("#main-entity div.info span.sub")?.text()?.toIntOrNull()
-        val dubCount = document.selectFirst("#main-entity div.info span.dub")?.text()?.toIntOrNull()
+        val dubCount = 0
         val dubEpisodes = emptyList<Episode>().toMutableList()
         val subEpisodes = emptyList<Episode>().toMutableList()
         val decoder = AnimekaiDecoder()
@@ -183,23 +183,23 @@ class AnimeKai : MainAPI() {
                 }
                 index + 1
             }
-            dubCount?.let {
-                if (index < it) {
-                    dubEpisodes += newEpisode("dub|" + ep.attr("token")) {
-                        name = ep.selectFirst("span")?.text()
-                        episode = ep.attr("num").toIntOrNull()
-                        this.rating = animeData?.episodes?.get(episode?.toString())?.rating
-                            ?.toDoubleOrNull()
-                            ?.times(10)
-                            ?.roundToInt()
-                            ?: 0
-                        this.posterUrl = animeData?.episodes?.get(episode?.toString())?.image
-                            ?: return@newEpisode
-                        this.description = animeData.episodes[episode?.toString()]?.overview
-                            ?: "No summary available"
-                    }
-                }
-            }
+            // dubCount?.let {
+            //     if (index < it) {
+            //         dubEpisodes += newEpisode("dub|" + ep.attr("token")) {
+            //             name = ep.selectFirst("span")?.text()
+            //             episode = ep.attr("num").toIntOrNull()
+            //             this.rating = animeData?.episodes?.get(episode?.toString())?.rating
+            //                 ?.toDoubleOrNull()
+            //                 ?.times(10)
+            //                 ?.roundToInt()
+            //                 ?: 0
+            //             this.posterUrl = animeData?.episodes?.get(episode?.toString())?.image
+            //                 ?: return@newEpisode
+            //             this.description = animeData.episodes[episode?.toString()]?.overview
+            //                 ?: "No summary available"
+            //         }
+            //     }
+            // }
 
         }
         val recommendations = document.select("div.aitem-col a").map { it.toRecommendResult() }
@@ -216,7 +216,7 @@ class AnimeKai : MainAPI() {
             engName = title
             posterUrl = poster
             addEpisodes(DubStatus.Subbed, subEpisodes)
-            addEpisodes(DubStatus.Dubbed, dubEpisodes)
+            // addEpisodes(DubStatus.Dubbed, dubEpisodes)
             this.recommendations = recommendations
             this.japName = jptitle
             this.tags = genres
@@ -236,7 +236,7 @@ class AnimeKai : MainAPI() {
         val decoder = AnimekaiDecoder()
         val token = data.split("|").last().split("=").last()
         val dubType = data.replace("$mainUrl/", "").split("|").firstOrNull() ?: "raw"
-        val types = if ("sub" in data) listOf(dubType, "softsub") else listOf(dubType)
+        val types = listOf("softsub")
         val homekey= getHomeKeys()
         val document =
             app.get("$mainUrl/ajax/links/list?token=$token&_=${decoder.generateToken(token,homekey)}")
