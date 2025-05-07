@@ -262,7 +262,8 @@ class StreamPlayAnime : MainAPI() {
                 malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }?.let {
                     invokeAnimepahe(it, episode, subtitleCallback, callback)
                 }
-            },
+            })
+         argamap(
             //{ invokeGrani(zorotitle ?: "", episode, callback) },
             //{
             //    malsync?.Gogoanime?.values?.firstNotNullOfOrNull { it["url"] }?.let {
