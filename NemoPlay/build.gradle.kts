@@ -2,6 +2,8 @@
 
 import org.jetbrains.kotlin.konan.properties.Properties
 
+val properties = Properties()
+properties.load(project.rootProject.file("local.properties").inputStream())
 version = ${properties.getProperty("GHVERSION")}
 android {
     buildFeatures {
@@ -9,8 +11,6 @@ android {
         viewBinding = true
     }
     defaultConfig {
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
         android.buildFeatures.buildConfig=true
         buildConfigField("String", "TMDB_API", "\"${properties.getProperty("TMDB_API")}\"")
         buildConfigField("String", "CINEMATV_API", "\"${properties.getProperty("CINEMATV_API")}\"")
