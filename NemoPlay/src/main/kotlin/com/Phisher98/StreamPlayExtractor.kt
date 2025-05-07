@@ -722,8 +722,8 @@ object StreamPlayExtractor : StreamPlay() {
         } ?: ""
         callback(
             newExtractorLink(
-                "anizone",
-                "anizone",
+                "⌜ Anizone ⌟",
+                "⌜ Anizone ⌟",
                 url = m3u8,
                 INFER_TYPE
             ) {
@@ -921,7 +921,7 @@ object StreamPlayExtractor : StreamPlay() {
             app.get(query, referer = privatereferer).parsedSafe<AnichiRoot>()?.data?.shows?.edges
         if (response != null) {
             val id = response.firstOrNull()?.id ?: return
-            val langType = listOf("sub", "dub")
+            val langType = listOf("sub")
             for (i in langType) {
                 val epData =
                     """${BuildConfig.ANICHI_API}?variables={"showId":"$id","translationType":"$i","episodeString":"${episode ?: 1}"}&extensions={"persistedQuery":{"version":1,"sha256Hash":"$ephash"}}"""
@@ -939,7 +939,7 @@ object StreamPlayExtractor : StreamPlay() {
                         if (sourceUrl.startsWith("http")) {
                                 val sourcename = sourceUrl.getHost()
                                 loadCustomExtractor(
-                                    "Allanime [${i.uppercase()}] [$sourcename]",
+                                    "⌜ AllAnime ⌟ | ${sourcename.uppercase()}",
                                     sourceUrl
                                         ?: "",
                                     "",
@@ -1062,7 +1062,7 @@ object StreamPlayExtractor : StreamPlay() {
                 val source = match?.groupValues?.getOrNull(1) ?: "Unknown"
                 val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
                 loadCustomExtractor(
-                    "pahe $source",
+                    "⌜ AnimePahe ⌟ | ${source.uppercase()}",
                     href,
                     "",
                     subtitleCallback,
@@ -1088,7 +1088,7 @@ object StreamPlayExtractor : StreamPlay() {
         //            val href = it.attr("data-src")
         //            if ("kwik.si" in href) {
         //                loadCustomExtractor(
-        //                    "pahe m3u8 $source",
+        //                    "⌜ Pahe ⌟ m3u8 $source",
         //                    href,
         //                    "",
         //                    subtitleCallback,
@@ -1450,12 +1450,13 @@ object StreamPlayExtractor : StreamPlay() {
                                 "Referer" to "https://megacloud.club/",
                                 "Origin" to "https://megacloud.club/"
                             )
-                            M3u8Helper.generateM3u8(
-                                "⌜ HiAnime ⌟ | ${server.third.uppercase()} | ${server.first.uppercase()}",
-                                source.url,
-                                mainUrl,
-                                headers = m3u8headers
-                            ).forEach(callback)
+                            if (dubtype.equals("sub", ignoreCase = true))
+                                M3u8Helper.generateM3u8(
+                                    "⌜ HiAnime ⌟ | ${serverName.uppercase()}",
+                                    source.url,
+                                    mainUrl,
+                                    headers = m3u8headers
+                                ).forEach(callback)
                         }
 
 
