@@ -264,6 +264,9 @@ class StreamPlayAnime : MainAPI() {
             //{ invokeKickAssAnime(kaasSlug, episode, subtitleCallback, callback) },
             { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback) },
         )
+        runAllAsync(
+            { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
+        )
         return true
     }
 
