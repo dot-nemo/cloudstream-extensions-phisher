@@ -131,6 +131,7 @@ jobs:
           echo StreamPlayAPI=$StreamPlayAPI >> local.properties
           echo PROXYAPI=$PROXYAPI >> local.properties
       - name: Build Plugins
+        uses: gradle/actions/setup-gradle@v4
         run: |
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
