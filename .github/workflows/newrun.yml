@@ -87,6 +87,7 @@ jobs:
           KisskhSub: ${{ secrets.KisskhSub }}
           StreamPlayAPI: ${{ secrets.StreamPlayAPI }}
           PROXYAPI: ${{ secrets.PROXYAPI }}
+          GHVERSION: ${{ github.run_number }}
         run: |
           cd $GITHUB_WORKSPACE/src
           echo TMDB_API=$TMDB_API >> local.properties
@@ -130,6 +131,7 @@ jobs:
           echo KisskhSub=$KisskhSub >> local.properties
           echo StreamPlayAPI=$StreamPlayAPI >> local.properties
           echo PROXYAPI=$PROXYAPI >> local.properties
+          echo GHVERSION=$GHVERSION >> local.properties
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4

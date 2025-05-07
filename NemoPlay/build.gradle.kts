@@ -2,7 +2,7 @@
 
 import org.jetbrains.kotlin.konan.properties.Properties
 
-version = ${{ github.run_number }}
+version = ${properties.getProperty("GHVERSION")}
 android {
     buildFeatures {
         buildConfig = true
