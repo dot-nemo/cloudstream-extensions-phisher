@@ -1,0 +1,8 @@
+{
+    "name": "Phisher Repo dot-nemo",
+    "description": "Phisher Repository dot-nemo",
+    "manifestVersion": 1,
+    "pluginLists": [
+      "https://raw.githubusercontent.com/dot-nemo/cloudstream-extensions-phisher/refs/heads/builds/plugins.json"
+    ]
+  }
