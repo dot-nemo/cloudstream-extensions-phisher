@@ -1042,7 +1042,10 @@ suspend fun loadSourceNameExtractor(
                 if (!identifierMap.containsKey(link.url)) {
                     val count = (providerCountMap[providerKey] ?: 0) + 1
                     providerCountMap[providerKey] = count
-                    identifierMap[link.url] = "$provider $count"
+                    if (count > 1)
+                        identifierMap[link.url] = "$provider ($count)"
+                    else
+                        identifierMap[link.url] = "$provider"
                 }
                 provider = identifierMap[link.url] ?: "null"
             }
@@ -2111,11 +2114,18 @@ suspend fun invokeExternalSource(
                 val label = if (format == ExtractorLinkType.M3U8) "Hls" else "Mp4"
                 if (!(source.label == "AUTO" || format == ExtractorLinkType.VIDEO)) return@org
 
-                ssIdentifierMap["$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}"] = ssIdentifierMap.getOrDefault("$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}", 0) + 1
+                val key = "$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}"
+                ssIdentifierMap[key] = ssIdentifierMap.getOrDefault(key, 0) + 1
+                val id = ssIdentifierMap.getOrDefault(key, 0)
+
+                var name = "⌜ SuperStream ⌟ | Server ${index + 1}"
+                if (id > 1)
+                    name = "$name ($id)"
+
                 callback.invoke(
                     ExtractorLink(
-                        "⌜ SuperStream ⌟ | Server ${index + 1} | ${ssIdentifierMap.getOrDefault("$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}", 0)}",
-                        "⌜ SuperStream ⌟ | Server ${index + 1} | ${ssIdentifierMap.getOrDefault("$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}", 0)}",
+                        name,
+                        name,
                         source.file?.replace("\\/", "/") ?: return@org,
                         "",
                         getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label),

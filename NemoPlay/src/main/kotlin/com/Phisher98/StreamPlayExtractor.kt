@@ -877,7 +877,8 @@ object StreamPlayExtractor : StreamPlay() {
         val jptitleSlug = jptitle.createSlug()
 
         runAllAsync(
-            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
+            { malId?.let { invokeAnimeKai("softsub",jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
+            { malId?.let { invokeAnimeKai("sub",jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
             { animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } },
             { invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { invokeAnizone(jptitle, episode, callback) },
@@ -1060,7 +1061,7 @@ object StreamPlayExtractor : StreamPlay() {
                 val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
                 animeKaiDone.await()
                 loadCustomExtractor(
-                    "⌜ *AnimePahe ⌟ | ${source.capitalize()}",
+                    "⌜ AnimePahe ⌟ | ${source.capitalize()}",
                     href,
                     "",
                     subtitleCallback,
@@ -1212,6 +1213,7 @@ object StreamPlayExtractor : StreamPlay() {
 
     @SuppressLint("NewApi")
     suspend fun invokeAnimeKai(
+        forcetype: String? = null,
         jptitle: String? = null,
         title: String? = null,
         malId: Int? = null,
@@ -1267,7 +1269,7 @@ object StreamPlayExtractor : StreamPlay() {
                             .parsed<AnimeKaiResponse>()
                             .getDocument()
 
-                        val types = listOf("softsub", "sub")
+                        val types = listOf(forcetype)
                         val servers = types.flatMap { type ->
                             document.select("div.server-items[data-id=$type] span.server[data-lid]").map { server ->
                                 val lid = server.attr("data-lid")
@@ -1278,42 +1280,20 @@ object StreamPlayExtractor : StreamPlay() {
 
                         // Process each server sequentially
                         for ((type, lid, serverName) in servers) {
-                            if (!type.contains("dub") && !type.contains("soft")) {
-                                val result = app.get("$AnimeKai/ajax/links/view?id=$lid&_=${decoder.generateToken(lid, homekey)}")
-                                    .parsed<AnimeKaiResponse>().result
-                                val homekeys = getHomeKeys()
-                                val iframe = extractVideoUrlFromJsonAnimekai(decoder.decodeIframeData(result, homekeys))
+                            val result = app.get("$AnimeKai/ajax/links/view?id=$lid&_=${decoder.generateToken(lid, homekey)}")
+                                .parsed<AnimeKaiResponse>().result
+                            val homekeys = getHomeKeys()
+                            val iframe = extractVideoUrlFromJsonAnimekai(decoder.decodeIframeData(result, homekeys))
 
-                                val nameSuffix = when {
-                                    type.contains("soft", ignoreCase = true) -> "Soft Sub"
-                                    type.contains("sub", ignoreCase = true) -> ""
-                                    type.contains("dub", ignoreCase = true) -> "Dub"
-                                    else -> ""
-                                }
-
-                                val name = "⌜ AnimeKai ⌟ | $serverName | $nameSuffix"
-                                loadExtractor(iframe, name, subtitleCallback, callback)
-
+                            val nameSuffix = when {
+                                type.contains("soft", ignoreCase = true) -> "Soft Sub"
+                                type.contains("sub", ignoreCase = true) -> ""
+                                type.contains("dub", ignoreCase = true) -> "Dub"
+                                else -> ""
                             }
-                        }
-                        for ((type, lid, serverName) in servers) {
-                            if (!type.contains("dub") && type.contains("soft")) {
-                                val result = app.get("$AnimeKai/ajax/links/view?id=$lid&_=${decoder.generateToken(lid, homekey)}")
-                                    .parsed<AnimeKaiResponse>().result
-                                val homekeys = getHomeKeys()
-                                val iframe = extractVideoUrlFromJsonAnimekai(decoder.decodeIframeData(result, homekeys))
 
-                                val nameSuffix = when {
-                                    type.contains("soft", ignoreCase = true) -> "Soft Sub"
-                                    type.contains("sub", ignoreCase = true) -> ""
-                                    type.contains("dub", ignoreCase = true) -> "Dub"
-                                    else -> ""
-                                }
-
-                                val name = "⌜ AnimeKai ⌟ | $serverName | $nameSuffix"
-                                loadExtractor(iframe, name, subtitleCallback, callback)
-
-                            }
+                            val name = "⌜ AnimeKai ⌟ | $serverName | $nameSuffix"
+                            loadExtractor(iframe, name, subtitleCallback, callback)
                         }
                     }
                 }
