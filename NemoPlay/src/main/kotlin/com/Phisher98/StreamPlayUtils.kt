@@ -1043,7 +1043,7 @@ suspend fun loadSourceNameExtractor(
                     val count = (providerCountMap[providerKey] ?: 0) + 1
                     providerCountMap[providerKey] = count
                     if (count > 1)
-                        identifierMap[link.url] = "$provider \\($count\\)"
+                        identifierMap[link.url] = "$provider/$count"
                     else
                         identifierMap[link.url] = "$provider"
                 }
@@ -2120,7 +2120,7 @@ suspend fun invokeExternalSource(
 
                 var name = "⌜ SuperStream ⌟ | Server ${index + 1}"
                 if (id > 1)
-                    name = "$name \\($id\\)"
+                    name = "$name/$id"
 
                 callback.invoke(
                     ExtractorLink(
