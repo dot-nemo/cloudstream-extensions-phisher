@@ -1026,12 +1026,11 @@ suspend fun loadSourceNameExtractor(
                     provider = "Driveleech"
                 }
             }
-            val key = "$source ${link.source} ${link.quality}"
-            if (!identifierMap.containsKey(key)) {
-                identifierMap[key] = "$provider ${providerCountMap.getOrDefault("$provider $link.quality", 0)}"
+            if (!identifierMap.containsKey(link.url)) {
+                identifierMap[link.url] = "$provider ${providerCountMap.getOrDefault("$provider $link.quality", 0)}"
                 providerCountMap["$provider $link.quality"] = providerCountMap.getOrDefault("$provider $link.quality", 0) + 1
             }
-            provider = identifierMap.getOrDefault(key, "null")
+            provider = identifierMap.getOrDefault(link.url, "null")
 
             callback.invoke(
                 newExtractorLink(
@@ -2090,7 +2089,7 @@ suspend fun invokeExternalSource(
         val jsonObject = JSONObject().put("sources", sourcesJsonArray)
         listOf(jsonObject.toString()).forEach {
             val parsedSources = tryParseJson<ExternalSourcesWrapper>(it)?.sources ?: return@forEach
-            val ssIdentifierMap = HashMap<Int, Int>()
+            val ssIdentifierMap = HashMap<String, Int>()
             parsedSources.forEach org@{ source ->
                 val format =
                     if (source.type == "video/mp4") ExtractorLinkType.VIDEO else ExtractorLinkType.M3U8
@@ -2100,14 +2099,14 @@ suspend fun invokeExternalSource(
                 callback.invoke(
                     ExtractorLink(
                         "⌜ SuperStream ⌟ ${source.size}",
-                        "⌜ SuperStream ⌟ | Server ${index + 1} | ${ssIdentifierMap.getOrDefault(index, 0)}",
+                        "⌜ SuperStream ⌟ | Server ${index + 1} | ${ssIdentifierMap.getOrDefault("$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}", 0)}",
                         source.file?.replace("\\/", "/") ?: return@org,
                         "",
                         getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label),
                         type = format,
                     )
                 )
-                ssIdentifierMap[index] = ssIdentifierMap.getOrDefault(index, 0) + 1
+                ssIdentifierMap["$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}"] = ssIdentifierMap.getOrDefault("$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}", 0) + 1
             }
         }
     }
