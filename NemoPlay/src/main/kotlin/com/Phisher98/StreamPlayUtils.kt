@@ -1028,10 +1028,10 @@ suspend fun loadSourceNameExtractor(
             }
             val key = "$source ${link.source} ${link.quality}"
             if (!identifierMap.containsKey(key)) {
-                identifierMap[key] = "$provider ${providerCountMap.getOrDefault(provider, 0)}"
-                providerCountMap[provider] = providerCountMap.getOrDefault(provider, 0) + 1
+                identifierMap[key] = "$provider ${providerCountMap.getOrDefault("$provider $link.quality", 0)}"
+                providerCountMap["$provider $link.quality"] = providerCountMap.getOrDefault("$provider $link.quality", 0) + 1
             }
-            provider = identifierMap.getOrDefault(link.source, "null")
+            provider = identifierMap.getOrDefault(key, "null")
 
             callback.invoke(
                 newExtractorLink(
@@ -2090,7 +2090,7 @@ suspend fun invokeExternalSource(
         val jsonObject = JSONObject().put("sources", sourcesJsonArray)
         listOf(jsonObject.toString()).forEach {
             val parsedSources = tryParseJson<ExternalSourcesWrapper>(it)?.sources ?: return@forEach
-            var identifier = 0
+            val ssIdentifierMap = HashMap<String, Int>()
             parsedSources.forEach org@{ source ->
                 val format =
                     if (source.type == "video/mp4") ExtractorLinkType.VIDEO else ExtractorLinkType.M3U8
@@ -2100,14 +2100,14 @@ suspend fun invokeExternalSource(
                 callback.invoke(
                     ExtractorLink(
                         "⌜ SuperStream ⌟ ${source.size}",
-                        "⌜ SuperStream ⌟ | Server ${index + 1} | ${identifier}",
+                        "⌜ SuperStream ⌟ | Server ${index + 1} | ${ssIdentifierMap.getOrDefault(index, 0)}",
                         source.file?.replace("\\/", "/") ?: return@org,
                         "",
                         getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label),
                         type = format,
                     )
                 )
-                identifier++
+                ssIdentifierMap[index] = ssIdentifierMap.getOrDefault(index, 0) + 1
             }
         }
     }
