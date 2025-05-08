@@ -836,7 +836,7 @@ object StreamPlayExtractor : StreamPlay() {
         jptitle: String? = null,
         epsTitle: String? = null,
         date: String?,
-        year: String?,
+        year: Int?,
         airedDate: String?,
         season: Int? = null,
         episode: Int? = null,
@@ -875,7 +875,7 @@ object StreamPlayExtractor : StreamPlay() {
             { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
             { invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { invokeAnizone(jptitle, episode, callback) },
-            { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
+            { invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
             //{ invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
             //{ invokeTokyoInsider(jptitle, title, episode, subtitleCallback, callback) },
         )
