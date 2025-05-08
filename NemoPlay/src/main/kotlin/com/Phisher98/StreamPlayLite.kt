@@ -91,6 +91,7 @@ class StreamPlayLite() : StreamPlay(sharedPref) {
                     res.jpTitle,
                     res.epsTitle,
                     res.date,
+                    res.year,
                     res.airedDate,
                     res.season,
                     res.episode,

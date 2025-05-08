@@ -722,8 +722,8 @@ object StreamPlayExtractor : StreamPlay() {
         } ?: ""
         callback(
             newExtractorLink(
-                "⌜ AniZone ⌟",
-                "⌜ AniZone ⌟",
+                "⌜ AniZone ⌟ | Soft Sub",
+                "⌜ AniZone ⌟ | Soft Sub",
                 url = m3u8,
                 INFER_TYPE
             ) {
@@ -836,6 +836,7 @@ object StreamPlayExtractor : StreamPlay() {
         jptitle: String? = null,
         epsTitle: String? = null,
         date: String?,
+        year: String?,
         airedDate: String?,
         season: Int? = null,
         episode: Int? = null,
@@ -874,7 +875,7 @@ object StreamPlayExtractor : StreamPlay() {
             { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
             { invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { invokeAnizone(jptitle, episode, callback) },
-            { invokeAnichi(zorotitle,tmdbYear,episode, subtitleCallback, callback) },
+            { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
             //{ invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
             //{ invokeTokyoInsider(jptitle, title, episode, subtitleCallback, callback) },
         )
@@ -1045,7 +1046,7 @@ object StreamPlayExtractor : StreamPlay() {
                 val source = match?.groupValues?.getOrNull(1) ?: "Unknown"
                 val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
                 loadCustomExtractor(
-                    "⌜ AnimePahe ⌟ | ${source.capitalize()}",
+                    "⌜ *AnimePahe ⌟ | ${source.capitalize()}",
                     href,
                     "",
                     subtitleCallback,
@@ -1252,7 +1253,7 @@ object StreamPlayExtractor : StreamPlay() {
                             .parsed<AnimeKaiResponse>()
                             .getDocument()
 
-                        val types = listOf("softsub")
+                        val types = listOf("softsub", "sub")
                         val servers = types.flatMap { type ->
                             document.select("div.server-items[data-id=$type] span.server[data-lid]").map { server ->
                                 val lid = server.attr("data-lid")
@@ -1270,13 +1271,13 @@ object StreamPlayExtractor : StreamPlay() {
                                 val iframe = extractVideoUrlFromJsonAnimekai(decoder.decodeIframeData(result, homekeys))
 
                                 val nameSuffix = when {
-                                    type.contains("soft", ignoreCase = true) -> "[Soft Sub]"
-                                    type.contains("sub", ignoreCase = true) -> "[Sub]"
-                                    type.contains("dub", ignoreCase = true) -> "[Dub]"
+                                    type.contains("soft", ignoreCase = true) -> "Soft Sub"
+                                    type.contains("sub", ignoreCase = true) -> ""
+                                    type.contains("dub", ignoreCase = true) -> "Dub"
                                     else -> ""
                                 }
 
-                                val name = "animekai $serverName $nameSuffix"
+                                val name = "⌜ AnimeKai ⌟ | $serverName | $nameSuffix"
                                 loadExtractor(iframe, name, subtitleCallback, callback)
 
                             }
@@ -1435,7 +1436,7 @@ object StreamPlayExtractor : StreamPlay() {
                             )
                             if (dubtype.equals("sub", ignoreCase = true))
                                 M3u8Helper.generateM3u8(
-                                    "⌜ HiAnime ⌟ | ${serverName.capitalize()} ${server.third.uppercase()}",
+                                    "⌜ HiAnime ⌟ | ${serverName.capitalize()} | Soft Sub",
                                     source.url,
                                     mainUrl,
                                     headers = m3u8headers

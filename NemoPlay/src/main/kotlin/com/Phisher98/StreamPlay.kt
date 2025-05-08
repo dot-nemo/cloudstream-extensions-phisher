@@ -493,6 +493,7 @@ open class StreamPlay(val sharedPref: SharedPreferences? = null) : TmdbProvider(
                         res.jpTitle,
                         res.epsTitle,
                         res.date,
+                        res.year,
                         res.airedDate,
                         res.season,
                         res.episode,
