@@ -1017,18 +1017,26 @@ suspend fun loadSourceNameExtractor(
 ) {
     loadExtractor(url, referer, subtitleCallback) { link ->
         CoroutineScope(Dispatchers.IO).launch {
-            identifierMap[source] = identifierMap.getOrDefault(source, 0) + 1
-            val blacklist = listOf("Driveleech", "[", "]", "MB", "GB")
-            var sourceinfo = ""
-            if (blacklist.any { link.source.contains(it, ignoreCase = true) }) {
-                sourceinfo = identifierMap[source]?.toString() ?: link.source
-            } else {
-                sourceinfo = link.source
+            var provider = link.source
+            if (provider.contains("Driveleech", ignoreCase=true)) {
+                if (provider.contains("Download", ignoreCase=true)) {
+                    provider = "Driveleech (Download)"
+                } else {
+                    provider = "Driveleech"
+                }
             }
+
+            val key = "$source ${link.source} ${link.quality}"
+            if (!identifierMap.containsKey(key)) {
+                identifierMap[key] = "$provider ${identifierMap.getOrDefault("idx", 0)}"
+                identifierMap["idx"] = identifierMap.getOrDefault("idx", 0) + 1
+            }
+
+            sourceinfo = identifierMap[key]?.toString() ?: "null"
             callback.invoke(
                 newExtractorLink(
-                    "$source | ${sourceinfo}",
-                    "$source | ${sourceinfo}",
+                    "$source | ${provider}",
+                    "$source | ${provider}",
                     link.url,
                 ) {
                     this.quality = link.quality
