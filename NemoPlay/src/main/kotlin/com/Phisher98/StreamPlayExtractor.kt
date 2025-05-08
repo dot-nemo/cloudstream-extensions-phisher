@@ -23,6 +23,7 @@ import com.lagradost.cloudstream3.utils.AppUtils.tryParseJson
 import com.lagradost.nicehttp.RequestBodyTypes
 import com.lagradost.nicehttp.Requests
 import com.lagradost.nicehttp.Session
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -49,6 +50,9 @@ import kotlin.math.max
 val session = Session(Requests().baseClient)
 
 object StreamPlayExtractor : StreamPlay() {
+
+    val animeKaiDone = CompletableDeferred<Unit>()
+    val animePaheDone = CompletableDeferred<Unit>()
 
     suspend fun invokeDreamfilm(
         title: String? = null,
@@ -717,6 +721,8 @@ object StreamPlayExtractor : StreamPlay() {
                 val text = it.text()
                 text.equals(jptitle, ignoreCase = true)
             }?.attr("href")
+        animeKaiDone.await()
+        animePaheDone.await()
         val m3u8 = href?.let {
             app.get("$it/$episode").document.select("media-player").attr("src")
         } ?: ""
@@ -871,13 +877,13 @@ object StreamPlayExtractor : StreamPlay() {
         val jptitleSlug = jptitle.createSlug()
 
         runAllAsync(
-            { animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } },
             { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
+            { animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } },
             { invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { invokeAnizone(jptitle, episode, callback) },
             { invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
-            //{ invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
-            //{ invokeTokyoInsider(jptitle, title, episode, subtitleCallback, callback) },
+            { invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
+            { kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
         )
     }
 
@@ -922,6 +928,8 @@ object StreamPlayExtractor : StreamPlay() {
                         val sourceUrl = source.sourceUrl
                         if (sourceUrl.startsWith("http")) {
                                 val sourcename = sourceUrl.getHost()
+                                animeKaiDone.await()
+                                animePaheDone.await()
                                 loadCustomExtractor(
                                     "⌜ AllAnime ⌟ | ${sourcename.capitalize()}",
                                     sourceUrl
@@ -955,6 +963,8 @@ object StreamPlayExtractor : StreamPlay() {
                                     }
 
                                     server.hls == null -> {
+                                        animeKaiDone.await()
+                                        animePaheDone.await()
                                         callback.invoke(
                                             newExtractorLink(
                                                 "⌜ AllAnime ⌟ | ${host.uppercase()}",
@@ -1006,15 +1016,18 @@ object StreamPlayExtractor : StreamPlay() {
             val href = it.select(".episode-node")
                 .firstOrNull { element -> element.text().contains("$episode") }?.select("a")
                 ?.attr("href")
-            if (href != null)
+            if (href != null) {
+                animeKaiDone.await()
+                animePaheDone.await()
                 loadCustomExtractor(
-                    "AnimeOwl [$subtype]",
+                    "⌜ AnimeOwl ⌟",
                     href,
                     AnimeOwlAPI,
                     subtitleCallback,
                     callback,
                     Qualities.P1080.value
                 )
+            }
         }
     }
 
@@ -1045,6 +1058,7 @@ object StreamPlayExtractor : StreamPlay() {
                 val match = qualityRegex.find(text)
                 val source = match?.groupValues?.getOrNull(1) ?: "Unknown"
                 val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
+                animeKaiDone.await()
                 loadCustomExtractor(
                     "⌜ *AnimePahe ⌟ | ${source.capitalize()}",
                     href,
@@ -1055,7 +1069,7 @@ object StreamPlayExtractor : StreamPlay() {
                 )
             }
         }
-
+        animePaheDone.complete(Unit)
         //document.select("#resolutionMenu button")
         //    .map {
         //        val dubText = it.select("span").text().lowercase()
@@ -1264,7 +1278,26 @@ object StreamPlayExtractor : StreamPlay() {
 
                         // Process each server sequentially
                         for ((type, lid, serverName) in servers) {
-                            if (!type.contains("dub")) {
+                            if (!type.contains("dub") && !type.contains("soft")) {
+                                val result = app.get("$AnimeKai/ajax/links/view?id=$lid&_=${decoder.generateToken(lid, homekey)}")
+                                    .parsed<AnimeKaiResponse>().result
+                                val homekeys = getHomeKeys()
+                                val iframe = extractVideoUrlFromJsonAnimekai(decoder.decodeIframeData(result, homekeys))
+
+                                val nameSuffix = when {
+                                    type.contains("soft", ignoreCase = true) -> "Soft Sub"
+                                    type.contains("sub", ignoreCase = true) -> ""
+                                    type.contains("dub", ignoreCase = true) -> "Dub"
+                                    else -> ""
+                                }
+
+                                val name = "⌜ AnimeKai ⌟ | $serverName | $nameSuffix"
+                                loadExtractor(iframe, name, subtitleCallback, callback)
+
+                            }
+                        }
+                        for ((type, lid, serverName) in servers) {
+                            if (!type.contains("dub") && type.contains("soft")) {
                                 val result = app.get("$AnimeKai/ajax/links/view?id=$lid&_=${decoder.generateToken(lid, homekey)}")
                                     .parsed<AnimeKaiResponse>().result
                                 val homekeys = getHomeKeys()
@@ -1288,6 +1321,7 @@ object StreamPlayExtractor : StreamPlay() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        animeKaiDone.complete(Unit)
     }
 
 
@@ -1434,13 +1468,16 @@ object StreamPlayExtractor : StreamPlay() {
                                 "Referer" to "https://megacloud.club/",
                                 "Origin" to "https://megacloud.club/"
                             )
-                            if (dubtype.equals("sub", ignoreCase = true))
+                            if (dubtype.equals("sub", ignoreCase = true)) {
+                                animeKaiDone.await()
+                                animePaheDone.await()
                                 M3u8Helper.generateM3u8(
                                     "⌜ HiAnime ⌟ | ${serverName.capitalize()} | Soft Sub",
                                     source.url,
                                     mainUrl,
                                     headers = m3u8headers
                                 ).forEach(callback)
+                            }
                         }
 
 
@@ -1457,6 +1494,8 @@ object StreamPlayExtractor : StreamPlay() {
                 }
             }
         }
+        animeKaiDone.complete(Unit)
+
     }
 
 
@@ -1507,9 +1546,13 @@ object StreamPlayExtractor : StreamPlay() {
                 "Sec-Fetch-Site" to "cross-site"
             )
 
+            animeKaiDone.await()
+            animePaheDone.await()
             callback(
                 ExtractorLink(
-                    "VidStreaming", "VidStreaming", m3u8, "", Qualities.P1080.value,
+                    "⌜ KickAssAnime ⌟ | VidStreaming",
+                    "⌜ KickAssAnime ⌟ | VidStreaming",
+                    m3u8, "", Qualities.P1080.value,
                     type = ExtractorLinkType.M3U8, headers = videoHeaders
                 )
             )
