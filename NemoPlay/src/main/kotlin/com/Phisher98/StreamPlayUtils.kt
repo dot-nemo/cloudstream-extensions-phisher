@@ -1031,7 +1031,7 @@ suspend fun loadSourceNameExtractor(
                 identifierMap[key] = "$provider ${providerCountMap.getOrDefault(provider, 0)}"
                 providerCountMap[provider] = providerCountMap.getOrDefault(provider, 0) + 1
             }
-            provider = identifierMap[link.source]
+            provider = identifierMap.getOrDefault(link.source, "null")
 
             callback.invoke(
                 newExtractorLink(
