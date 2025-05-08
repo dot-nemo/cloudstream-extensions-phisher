@@ -104,7 +104,8 @@ val mimeType = arrayOf(
     "video/x-msvideo"
 )
 
-val identifierMap = HashMap<String, Int>()
+val providerCountMap = HashMap<String, Int>()
+val identifierMap = HashMap<String, String>()
 
 fun Document.getMirrorLink(): String? {
     return this.select("div.mb-4 a").randomOrNull()
@@ -1025,14 +1026,13 @@ suspend fun loadSourceNameExtractor(
                     provider = "Driveleech"
                 }
             }
-
             val key = "$source ${link.source} ${link.quality}"
             if (!identifierMap.containsKey(key)) {
-                identifierMap[key] = "$provider ${identifierMap.getOrDefault("idx", 0)}"
-                identifierMap["idx"] = identifierMap.getOrDefault("idx", 0) + 1
+                identifierMap[key] = "$provider ${providerCountMap.getOrDefault(provider, 0)}"
+                providerCountMap[provider] = providerCountMap.getOrDefault(provider, 0) + 1
             }
+            provider = identifierMap[link.source]
 
-            sourceinfo = identifierMap[key]?.toString() ?: "null"
             callback.invoke(
                 newExtractorLink(
                     "$source | ${provider}",
