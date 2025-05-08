@@ -2090,7 +2090,7 @@ suspend fun invokeExternalSource(
         val jsonObject = JSONObject().put("sources", sourcesJsonArray)
         listOf(jsonObject.toString()).forEach {
             val parsedSources = tryParseJson<ExternalSourcesWrapper>(it)?.sources ?: return@forEach
-            val ssIdentifierMap = HashMap<String, Int>()
+            val ssIdentifierMap = HashMap<Int, Int>()
             parsedSources.forEach org@{ source ->
                 val format =
                     if (source.type == "video/mp4") ExtractorLinkType.VIDEO else ExtractorLinkType.M3U8
