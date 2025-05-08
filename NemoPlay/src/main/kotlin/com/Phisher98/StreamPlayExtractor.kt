@@ -3613,7 +3613,7 @@ object StreamPlayExtractor : StreamPlay() {
             callback.invoke(
                 newExtractorLink(
                     "DahmerMovies",
-                    "DahmerMovies $tags",
+                    "DahmerMovies",
                     url = decode((url + it.second).encodeUrl())
                 ) {
                     this.referer = ""
@@ -4497,8 +4497,8 @@ object StreamPlayExtractor : StreamPlay() {
             epData.sources.forEach {
                 callback(
                     newExtractorLink(
-                        "FlixHQ ${server.uppercase()}",
-                        "FlixHQ ${server.uppercase()}",
+                        "FlixHQ | ${server.capitalize()}",
+                        "FlixHQ | ${server.capitalize()}",
                         url = it.url,
                         ExtractorLinkType.M3U8
                     ) {

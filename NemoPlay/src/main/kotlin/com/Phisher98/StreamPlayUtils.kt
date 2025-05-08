@@ -1021,14 +1021,21 @@ suspend fun loadSourceNameExtractor(
 ) {
     loadExtractor(url, referer, subtitleCallback) { link ->
         CoroutineScope(Dispatchers.IO).launch {
+
             var provider = link.source
-            if (provider.contains("Driveleech", ignoreCase=true)) {
-                if (provider.contains("Download", ignoreCase=true)) {
-                    provider = "Driveleech (Download)"
-                } else {
-                    provider = "Driveleech"
-                }
-            }
+
+            if (link.source.contains("Driveleech", ignoreCase=true))
+                provider = "Driveleech"
+
+            if (link.source.contains("Driveseed", ignoreCase=true))
+                provider = "Driveseed"
+
+            if (link.source.contains("Download", ignoreCase=true))
+                provider = "$provider (Download)"
+
+            if (link.source.contains("VLC", ignoreCase=true))
+                provider = "$provider (VLC)"
+
             val providerKey = "$provider ${link.quality}"
 
             mapMutex.withLock {
@@ -1043,7 +1050,7 @@ suspend fun loadSourceNameExtractor(
             callback.invoke(
                 newExtractorLink(
                     "$source | ${provider}",
-                    "$source | ${provider} ",
+                    "$source | ${provider}",
                     link.url,
                 ) {
                     this.quality = link.quality
@@ -1957,8 +1964,8 @@ fun loadHindMoviezLinks(
                             val link = doc.select("a")
                             callback.invoke(
                                 newExtractorLink(
-                                    "HindMoviez [GDirect] [$size]",
-                                    "HindMoviez [GDirect] [$size]",
+                                    "HindMoviez | GDirect",
+                                    "HindMoviez | GDirect",
                                     url = link.attr("href")
                                 ) {
                                     this.quality = quality
@@ -2107,7 +2114,7 @@ suspend fun invokeExternalSource(
                 ssIdentifierMap["$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}"] = ssIdentifierMap.getOrDefault("$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}", 0) + 1
                 callback.invoke(
                     ExtractorLink(
-                        "⌜ SuperStream ⌟ ${source.size}",
+                        "⌜ SuperStream ⌟ | Server ${index + 1} | ${ssIdentifierMap.getOrDefault("$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}", 0)}",
                         "⌜ SuperStream ⌟ | Server ${index + 1} | ${ssIdentifierMap.getOrDefault("$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}", 0)}",
                         source.file?.replace("\\/", "/") ?: return@org,
                         "",

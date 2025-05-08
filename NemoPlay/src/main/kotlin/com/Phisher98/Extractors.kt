@@ -1158,8 +1158,8 @@ class HubCloud : ExtractorApi() {
                 link.contains("technorozen.workers.dev") -> {
                     callback.invoke(
                         newExtractorLink(
-                            "$source [10GB Server]",
-                            "$source [10GB Server] [$size]",
+                            "$source | 10GB Server",
+                            "$source | 10GB Server",
                             url = getGBurl(link)
                         ) {
                             this.quality = quality
@@ -1169,8 +1169,8 @@ class HubCloud : ExtractorApi() {
                 link.contains("pixeldra.in") || link.contains("pixeldrain") -> {
                     callback.invoke(
                         newExtractorLink(
-                            "$source [Pixeldrain]",
-                            "$source [Pixeldrain] [$size]",
+                            "$source | Pixeldrain",
+                            "$source | Pixeldrain",
                             url = link
                         ) {
                             this.quality = quality
@@ -1180,8 +1180,8 @@ class HubCloud : ExtractorApi() {
                 link.contains("buzzheavier") -> {
                     callback.invoke(
                         newExtractorLink(
-                            "$source [Buzzheavier]",
-                            "$source [Buzzheavier] [$size]",
+                            "$source | Buzzheavier",
+                            "$source | Buzzheavier",
                             url = "$link/download"
                         ) {
                             this.quality = quality
@@ -1192,8 +1192,8 @@ class HubCloud : ExtractorApi() {
                 link.contains(".dev") -> {
                     callback.invoke(
                         newExtractorLink(
-                            "$source [Hub-Cloud]",
-                            "$source [Hub-Cloud] [$size]",
+                            "$source | Hub-Cloud",
+                            "$source | Hub-Cloud",
                             url = link
                         ) {
                             this.quality = quality
@@ -1203,8 +1203,8 @@ class HubCloud : ExtractorApi() {
                 link.contains("fastdl.lol") -> {
                     callback.invoke(
                         newExtractorLink(
-                            "$source [FSL] Hub-Cloud",
-                            "$source [FSL] Hub-Cloud [$size]",
+                            "$source | FSL Hub-Cloud",
+                            "$source | FSL Hub-Cloud",
                             url = link
                         ) {
                             this.quality = quality
@@ -1214,8 +1214,8 @@ class HubCloud : ExtractorApi() {
                 link.contains("hubcdn.xyz") -> {
                     callback.invoke(
                         newExtractorLink(
-                            "$source [File] Hub-Cloud",
-                            "$source [File] Hub-Cloud [$size]",
+                            "$source | File Hub-Cloud",
+                            "$source | File Hub-Cloud",
                             url = link
                         ) {
                             this.quality = quality
