@@ -1026,16 +1026,17 @@ suspend fun loadSourceNameExtractor(
                     provider = "Driveleech"
                 }
             }
+            val providerKey = "$provider $link.quality"
             if (!identifierMap.containsKey(link.url)) {
-                identifierMap[link.url] = "$provider ${providerCountMap.getOrDefault("$provider $link.quality", 0)}"
-                providerCountMap["$provider $link.quality"] = providerCountMap.getOrDefault("$provider $link.quality", 0) + 1
+                identifierMap[link.url] = "$provider ${providerCountMap.getOrDefault(providerKey, 0)}"
+                providerCountMap[providerKey] = providerCountMap.getOrDefault(providerKey, 0) + 1
             }
             provider = identifierMap.getOrDefault(link.url, "null")
 
             callback.invoke(
                 newExtractorLink(
                     "$source | ${provider}",
-                    "$source | ${provider}",
+                    "$source | ${provider} ${providerCountMap.getOrDefault(providerKey, 0)}",
                     link.url,
                 ) {
                     this.quality = link.quality
