@@ -1030,7 +1030,6 @@ suspend fun loadSourceNameExtractor(
                 }
             }
             val providerKey = "$provider ${link.quality}"
-            var identifier: String
 
             mapMutex.withLock {
                 if (!identifierMap.containsKey(link.url)) {
@@ -1038,13 +1037,13 @@ suspend fun loadSourceNameExtractor(
                     providerCountMap[providerKey] = count
                     identifierMap[link.url] = "$provider $count"
                 }
-                identifier = identifierMap[link.url] ?: "null"
+                provider = identifierMap[link.url] ?: "null"
             }
 
             callback.invoke(
                 newExtractorLink(
                     "$source | ${provider}",
-                    "$source | ${provider} ${providerCountMap.getOrDefault(providerKey, 0)}",
+                    "$source | ${provider} ",
                     link.url,
                 ) {
                     this.quality = link.quality
@@ -2105,6 +2104,7 @@ suspend fun invokeExternalSource(
                 val label = if (format == ExtractorLinkType.M3U8) "Hls" else "Mp4"
                 if (!(source.label == "AUTO" || format == ExtractorLinkType.VIDEO)) return@org
 
+                ssIdentifierMap["$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}"] = ssIdentifierMap.getOrDefault("$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}", 0) + 1
                 callback.invoke(
                     ExtractorLink(
                         "⌜ SuperStream ⌟ ${source.size}",
@@ -2115,7 +2115,6 @@ suspend fun invokeExternalSource(
                         type = format,
                     )
                 )
-                ssIdentifierMap["$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}"] = ssIdentifierMap.getOrDefault("$index ${getIndexQuality(if (format == ExtractorLinkType.M3U8) fileList.fileName else source.label)}", 0) + 1
             }
         }
     }
