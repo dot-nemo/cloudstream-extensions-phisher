@@ -240,27 +240,37 @@ class StreamPlayAnime : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ): Boolean {
-        val mediaData = AppUtils.parseJson<LinkData>(data)
-        val malId = mediaData.malId
-        val episode = mediaData.episode
-        val jpTitle = mediaData.jpTitle
-        val year=mediaData.year
-        val malsync = app.get("$malsyncAPI/mal/anime/$malId").parsedSafe<MALSyncResponses>()?.sites
-        val zoro = malsync?.zoro
-        val zorotitle = zoro?.values?.firstNotNullOfOrNull { it["title"] }?.replace(":", " ")
-        val hianimeUrl = zoro?.values?.firstNotNullOfOrNull { it["url"] }
-        val kaasSlug = malsync?.KickAssAnime?.values?.firstNotNullOfOrNull { it["identifier"] }
-
-
-        runAllAsync(
-            malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }?.let {
-                invokeAnimepahe(it, episode, subtitleCallback, callback)
-            },
-            { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
-            { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback) },
-            { invokeAnizone(jpTitle, episode, callback) },
-            { invokeHianime(zoro?.keys?.toList(), hianimeUrl, episode, subtitleCallback, callback) },
+        val res = AppUtils.parseJson<LinkData>(data)
+        invokeAnimes(
+            res.title,
+            res.jpTitle,
+            res.epsTitle,
+            res.date,
+            res.airedDate,
+            res.season,
+            res.episode,
+            subtitleCallback,
+            callback
         )
+
+        //val malId = res.malId
+        //val episode = res.episode
+        //val jpTitle = res.jpTitle
+        //val year=res.year
+        //val malsync = app.get("$malsyncAPI/mal/anime/$malId").parsedSafe<MALSyncResponses>()?.sites
+        //val zoro = malsync?.zoro
+        //val zorotitle = zoro?.values?.firstNotNullOfOrNull { it["title"] }?.replace(":", " ")
+        //val hianimeUrl = zoro?.values?.firstNotNullOfOrNull { it["url"] }
+        //val kaasSlug = malsync?.KickAssAnime?.values?.firstNotNullOfOrNull { it["identifier"] }
+        //val animepaheUrl = malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }
+
+        //runAllAsync(
+        //    animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) },
+        //    { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
+        //    { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback) },
+        //    { invokeAnizone(jpTitle, episode, callback) },
+        //    { invokeHianime(zoro?.keys?.toList(), hianimeUrl, episode, subtitleCallback, callback) },
+        //)
         return true
     }
 

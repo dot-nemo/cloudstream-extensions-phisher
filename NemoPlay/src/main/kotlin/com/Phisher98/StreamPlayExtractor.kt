@@ -870,31 +870,14 @@ object StreamPlayExtractor : StreamPlay() {
         val jptitleSlug = jptitle.createSlug()
 
         runAllAsync(
-            //{ malId?.let { invokeAnimetosho(it, season, episode, subtitleCallback, callback) } },
-            //{ invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
-            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
-            //{
-            //    animepaheTitle?.let {
-            //        invokeMiruroanimeGogo(
-            //            zoroIds,
-            //            it,
-            //            episode,
-            //            subtitleCallback,
-            //            callback
-            //        )
-            //    }
-            //},
-            //{ kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
             { animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } },
-            //{ invokeGrani(title.orEmpty(), episode, callback) },
-            //{ invokeGojo(aniId, jptitleSlug, episode, subtitleCallback, callback) },
-            //{ invokeAnichi(zorotitle,tmdbYear,episode, subtitleCallback, callback) },
+            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
+            { invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
+            { invokeAnizone(jptitle, episode, callback) },
+            { invokeAnichi(zorotitle,tmdbYear,episode, subtitleCallback, callback) },
             //{ invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
-            //{ gogoUrl?.let { invokeAnitaku(it, episode, subtitleCallback, callback) } },
             //{ invokeTokyoInsider(jptitle, title, episode, subtitleCallback, callback) },
-            )
-        runAllAsync(
-            { invokeAnizone(jptitle, episode, callback) })
+        )
     }
 
 
