@@ -877,8 +877,8 @@ object StreamPlayExtractor : StreamPlay() {
         val jptitleSlug = jptitle.createSlug()
 
         runAllAsync(
-            { malId?.let { invokeAnimeKai("softsub",jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
-            { malId?.let { invokeAnimeKai("sub",jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
+            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
+            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
             { animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } },
             { invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { invokeAnizone(jptitle, episode, callback) },
@@ -1213,7 +1213,6 @@ object StreamPlayExtractor : StreamPlay() {
 
     @SuppressLint("NewApi")
     suspend fun invokeAnimeKai(
-        forcetype: String? = null,
         jptitle: String? = null,
         title: String? = null,
         malId: Int? = null,
@@ -1269,7 +1268,7 @@ object StreamPlayExtractor : StreamPlay() {
                             .parsed<AnimeKaiResponse>()
                             .getDocument()
 
-                        val types = listOf(forcetype)
+                        val types = listOf("softsub", "sub")
                         val servers = types.flatMap { type ->
                             document.select("div.server-items[data-id=$type] span.server[data-lid]").map { server ->
                                 val lid = server.attr("data-lid")
