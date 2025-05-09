@@ -52,7 +52,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.Calendar
 import kotlin.math.roundToInt
 
-class StreamPlayAnime : MainAPI() {
+class StreamPlayAnimeHardSub : MainAPI() {
     override var name = "NemoPlay-Anime/HardSub"
     override var mainUrl = "https://anilist.co"
     override var supportedTypes = setOf(TvType.Anime, TvType.AnimeMovie, TvType.OVA)
