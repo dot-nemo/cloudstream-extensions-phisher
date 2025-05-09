@@ -34,7 +34,7 @@ import com.lagradost.cloudstream3.utils.ExtractorApi
 import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.lagradost.cloudstream3.utils.M3u8Helper
 import com.lagradost.nicehttp.RequestBodyTypes
-import com.phisher98.StreamPlay.Companion.modflixAPI
+import com.nemo.StreamPlay.Companion.modflixAPI
 import kotlinx.serialization.Serializable
 import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
