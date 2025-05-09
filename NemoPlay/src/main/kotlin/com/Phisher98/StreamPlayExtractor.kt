@@ -878,23 +878,23 @@ object StreamPlayExtractor : StreamPlay() {
 
         animeKaiDone?.complete(Unit)
 
-        if (type != null) {
+        if (type == "hardsub" || type == "softsub") {
             // if (animeKaiDone == null || animeKaiDone!!.isCompleted) animeKaiDone = CompletableDeferred()
             if (animePaheDone == null || animePaheDone!!.isCompleted) animePaheDone = CompletableDeferred()
         }
 
         runAllAsync(
             // { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
-            { if (type != "hardsub") invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
-            { if (type != "hardsub") invokeAnizone(jptitle, episode, callback) },
-            { if (type != "softsub") {
-                    if (type != "hardsub") animePaheDone?.complete(Unit)
+            { if (type == "softsub" || type == null) invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
+            { if (type == "softsub" || type == null) invokeAnizone(jptitle, episode, callback) },
+            { if (type == "hardsub" || type == null) {
+                    if (type == null) animePaheDone?.complete(Unit)
                     animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) }
               }
             },
-            { if (type != "softsub") invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
-            { if (type != "softsub") invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
-            { if (type != "softsub") kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
+            { if (type == "hardsub" || type == null) invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
+            { if (type == "hardsub" || type == null) invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
+            { if (type == "hardsub" || type == null) kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
         )
 
 
