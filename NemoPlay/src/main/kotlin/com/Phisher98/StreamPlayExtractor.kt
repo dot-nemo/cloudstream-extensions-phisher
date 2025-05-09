@@ -876,20 +876,14 @@ object StreamPlayExtractor : StreamPlay() {
         val tmdbYear = date?.substringBefore("-")?.toIntOrNull()
         val jptitleSlug = jptitle.createSlug()
 
-        animeKaiDone?.complete(Unit)
-
         if (type != 0) {
-            // if (animeKaiDone == null || animeKaiDone!!.isCompleted) animeKaiDone = CompletableDeferred()
+            if (animeKaiDone == null || animeKaiDone!!.isCompleted) animeKaiDone = CompletableDeferred()
             if (animePaheDone == null || animePaheDone!!.isCompleted) animePaheDone = CompletableDeferred()
         }
 
         runAllAsync(
-            // { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
-            { if (type != 1) {
-                Log.d("nemo", "hianime")
-                invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback)
-                }
-            },
+            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
+            { if (type != 1) invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { if (type != 1) invokeAnizone(jptitle, episode, callback) },
             { if (type != 2) {
                     if (type == 0) animePaheDone?.complete(Unit)
