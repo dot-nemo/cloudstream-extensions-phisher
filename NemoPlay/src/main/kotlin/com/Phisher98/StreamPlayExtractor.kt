@@ -876,12 +876,12 @@ object StreamPlayExtractor : StreamPlay() {
         val tmdbYear = date?.substringBefore("-")?.toIntOrNull()
         val jptitleSlug = jptitle.createSlug()
         if (type != null) {
-            if (animeKaiDone == null || animeKaiDone!!.isCompleted) animeKaiDone = CompletableDeferred()
+            // if (animeKaiDone == null || animeKaiDone!!.isCompleted) animeKaiDone = CompletableDeferred()
             if (animePaheDone == null || animePaheDone!!.isCompleted) animePaheDone = CompletableDeferred()
         }
 
         runAllAsync(
-            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
+            // { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
             { if (type != "hardsub") invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { if (type != "hardsub") invokeAnizone(jptitle, episode, callback) },
             { if (type != "softsub") {
@@ -889,9 +889,9 @@ object StreamPlayExtractor : StreamPlay() {
                     animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) }
               }
             },
-            { if (type != "softsub") invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
-            { if (type != "softsub") invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
-            { if (type != "softsub") kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
+            // { if (type != "softsub") invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
+            // { if (type != "softsub") invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
+            // { if (type != "softsub") kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
         )
 
 
