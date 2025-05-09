@@ -53,7 +53,7 @@ import java.util.Calendar
 import kotlin.math.roundToInt
 
 class StreamPlayAnime : MainAPI() {
-    override var name = "NemoPlay-Anime"
+    override var name = "NemoPlay-Anime/HardSub"
     override var mainUrl = "https://anilist.co"
     override var supportedTypes = setOf(TvType.Anime, TvType.AnimeMovie, TvType.OVA)
     override var lang = "en"
@@ -252,7 +252,8 @@ class StreamPlayAnime : MainAPI() {
             res.season,
             res.episode,
             subtitleCallback,
-            callback
+            callback,
+            "hardsub"
         )
 
         //val malId = res.malId

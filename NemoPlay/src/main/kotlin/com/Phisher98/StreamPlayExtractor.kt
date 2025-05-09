@@ -846,7 +846,8 @@ object StreamPlayExtractor : StreamPlay() {
         season: Int? = null,
         episode: Int? = null,
         subtitleCallback: (SubtitleFile) -> Unit,
-        callback: (ExtractorLink) -> Unit
+        callback: (ExtractorLink) -> Unit,
+        type: String? = null
     ) {
         val (aniId, malId) = convertTmdbToAnimeId(
             title, date, airedDate, if (season == null) TvType.AnimeMovie else TvType.Anime
@@ -876,14 +877,16 @@ object StreamPlayExtractor : StreamPlay() {
         val jptitleSlug = jptitle.createSlug()
 
         runAllAsync(
-            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback) } },
-            { animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } },
-            { invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
-            { invokeAnizone(jptitle, episode, callback) },
-            { invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
-            { invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
-            { kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
+            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
+            { if (type != "hardsub") invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
+            { if (type != "hardsub") invokeAnizone(jptitle, episode, callback) },
+            { if (type != "softsub") animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } },
+            { if (type != "softsub") invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
+            { if (type != "softsub") invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
+            { if (type != "softsub") kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
         )
+
+
     }
 
 
@@ -1216,7 +1219,8 @@ object StreamPlayExtractor : StreamPlay() {
         malId: Int? = null,
         episode: Int? = null,
         subtitleCallback: (SubtitleFile) -> Unit,
-        callback: (ExtractorLink) -> Unit
+        callback: (ExtractorLink) -> Unit,
+        type: String? = null
     ) {
         if (jptitle.isNullOrBlank() || title.isNullOrBlank()) return
 
@@ -1266,7 +1270,12 @@ object StreamPlayExtractor : StreamPlay() {
                             .parsed<AnimeKaiResponse>()
                             .getDocument()
 
-                        val types = listOf("softsub", "sub")
+                        var types = listOf("softsub", "sub")
+                        if (type == "softsub")
+                            types = types - "sub"
+                        else if (type == "hardsub")
+                            types = types - "softsub"
+
                         val servers = types.flatMap { type ->
                             document.select("div.server-items[data-id=$type] span.server[data-lid]").map { server ->
                                 val lid = server.attr("data-lid")
