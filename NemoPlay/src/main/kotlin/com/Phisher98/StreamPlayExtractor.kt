@@ -883,13 +883,13 @@ object StreamPlayExtractor : StreamPlay() {
 
         runAllAsync(
             { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
-            { if (type != 1) invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
-            { if (type != 1) invokeAnizone(jptitle, episode, callback) },
             { if (type != 2) {
                     if (type == 0) animePaheDone?.complete(Unit)
                     animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) }
               }
             },
+            { if (type != 1) invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
+            { if (type != 1) invokeAnizone(jptitle, episode, callback) },
             { if (type != 2) invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
             { if (type != 2) invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
             { if (type != 2) kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
@@ -1418,7 +1418,7 @@ object StreamPlayExtractor : StreamPlay() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
-        Log.d("nemo", "hianime")
+        Log.d("nemo", "invoke hianime")
         val headers = mapOf(
             "X-Requested-With" to "XMLHttpRequest",
         )
@@ -1478,7 +1478,7 @@ object StreamPlayExtractor : StreamPlay() {
                                     mainUrl,
                                     headers = m3u8headers
                                 ).forEach(callback)
-                                Log.d("nemo", "hianime")
+                                Log.d("nemo", "hianime added")
                             }
                         }
 
