@@ -51,8 +51,8 @@ val session = Session(Requests().baseClient)
 
 object StreamPlayExtractor : StreamPlay() {
 
-    val animeKaiDone = CompletableDeferred<Unit>()
-    val animePaheDone = CompletableDeferred<Unit>()
+    var animeKaiDone: CompletableDeferred<Unit>? = null
+    var animePaheDone: CompletableDeferred<Unit>? = null
 
     suspend fun invokeDreamfilm(
         title: String? = null,
@@ -720,8 +720,8 @@ object StreamPlayExtractor : StreamPlay() {
                 val text = it.text()
                 text.equals(jptitle, ignoreCase = true)
             }?.attr("href")
-        animeKaiDone.await()
-        animePaheDone.await()
+        animeKaiDone?.await()
+        animePaheDone?.await()
         val m3u8 = href?.let {
             app.get("$it/$episode").document.select("media-player").attr("src")
         } ?: ""
@@ -876,16 +876,17 @@ object StreamPlayExtractor : StreamPlay() {
         val tmdbYear = date?.substringBefore("-")?.toIntOrNull()
         val jptitleSlug = jptitle.createSlug()
 
+        if (animeKaiDone == null || animeKaiDone!!.isCompleted) animeKaiDone = CompletableDeferred()
+        if (animePaheDone == null || animePaheDone!!.isCompleted) animePaheDone = CompletableDeferred()
+
         runAllAsync(
             { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
             { if (type != "hardsub") invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { if (type != "hardsub") invokeAnizone(jptitle, episode, callback) },
-            {
-                if (type == "hardsub") {
+            { if (type != "softsub") {
+                    if (type != "hardsub") animePaheDone?.complete(Unit)
                     animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) }
-                } else {
-                    animePaheDone.complete(Unit)
-                }
+              }
             },
             { if (type != "softsub") invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
             { if (type != "softsub") invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
@@ -936,8 +937,8 @@ object StreamPlayExtractor : StreamPlay() {
                         val sourceUrl = source.sourceUrl
                         if (sourceUrl.startsWith("http")) {
                                 val sourcename = sourceUrl.getHost()
-                                animeKaiDone.await()
-                                animePaheDone.await()
+                                animeKaiDone?.await()
+                                animePaheDone?.await()
                                 loadCustomExtractor(
                                     "⌜ AllAnime ⌟ | ${sourcename.capitalize()}",
                                     sourceUrl
@@ -971,8 +972,8 @@ object StreamPlayExtractor : StreamPlay() {
                                     }
 
                                     server.hls == null -> {
-                                        animeKaiDone.await()
-                                        animePaheDone.await()
+                                        animeKaiDone?.await()
+                                        animePaheDone?.await()
                                         callback.invoke(
                                             newExtractorLink(
                                                 "⌜ AllAnime ⌟ | ${host.uppercase()}",
@@ -1025,8 +1026,8 @@ object StreamPlayExtractor : StreamPlay() {
                 .firstOrNull { element -> element.text().contains("$episode") }?.select("a")
                 ?.attr("href")
             if (href != null) {
-                animeKaiDone.await()
-                animePaheDone.await()
+                animeKaiDone?.await()
+                animePaheDone?.await()
                 loadCustomExtractor(
                     "⌜ AnimeOwl ⌟",
                     href,
@@ -1066,7 +1067,7 @@ object StreamPlayExtractor : StreamPlay() {
                 val match = qualityRegex.find(text)
                 val source = match?.groupValues?.getOrNull(1) ?: "Unknown"
                 val quality = match?.groupValues?.getOrNull(2)?.substringBefore("p") ?: "Unknown"
-                animeKaiDone.await()
+                animeKaiDone?.await()
                 loadCustomExtractor(
                     "⌜ AnimePahe ⌟ | ${source.capitalize()}",
                     href,
@@ -1077,7 +1078,7 @@ object StreamPlayExtractor : StreamPlay() {
                 )
             }
         }
-        animePaheDone.complete(Unit)
+        animePaheDone?.complete(Unit)
         //document.select("#resolutionMenu button")
         //    .map {
         //        val dubText = it.select("span").text().lowercase()
@@ -1313,7 +1314,7 @@ object StreamPlayExtractor : StreamPlay() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        animeKaiDone.complete(Unit)
+        animeKaiDone?.complete(Unit)
     }
 
 
@@ -1461,8 +1462,8 @@ object StreamPlayExtractor : StreamPlay() {
                                 "Origin" to "https://megacloud.club/"
                             )
                             if (dubtype.equals("sub", ignoreCase = true)) {
-                                animeKaiDone.await()
-                                animePaheDone.await()
+                                animeKaiDone?.await()
+                                animePaheDone?.await()
                                 M3u8Helper.generateM3u8(
                                     "⌜ HiAnime ⌟ | ${serverName.capitalize()} | Soft Sub",
                                     source.url,
@@ -1486,7 +1487,7 @@ object StreamPlayExtractor : StreamPlay() {
                 }
             }
         }
-        animeKaiDone.complete(Unit)
+        animeKaiDone?.complete(Unit)
 
     }
 
@@ -1538,8 +1539,8 @@ object StreamPlayExtractor : StreamPlay() {
                 "Sec-Fetch-Site" to "cross-site"
             )
 
-            animeKaiDone.await()
-            animePaheDone.await()
+            animeKaiDone?.await()
+            animePaheDone?.await()
             callback(
                 ExtractorLink(
                     "⌜ KickAssAnime ⌟ | VidStreaming",
