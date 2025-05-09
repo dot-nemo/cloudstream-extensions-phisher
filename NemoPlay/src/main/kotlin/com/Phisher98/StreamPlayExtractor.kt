@@ -883,6 +883,8 @@ object StreamPlayExtractor : StreamPlay() {
             if (animePaheDone == null || animePaheDone!!.isCompleted) animePaheDone = CompletableDeferred()
         }
 
+        Log.d("nemo", type)
+
         runAllAsync(
             // { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
             { if (type == "softsub" || type == null) invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
