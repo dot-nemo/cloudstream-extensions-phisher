@@ -51,6 +51,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.Calendar
 import kotlin.math.roundToInt
+import kotlinx.coroutines.CompletableDeferred
 
 class StreamPlayAnimeHardSub : MainAPI() {
     override var name = "NemoPlay-Anime/HardSub"
@@ -242,38 +243,40 @@ class StreamPlayAnimeHardSub : MainAPI() {
         callback: (ExtractorLink) -> Unit
     ): Boolean {
         val res = AppUtils.parseJson<LinkData>(data)
-        invokeAnimes(
-            res.title,
-            res.jpTitle,
-            res.epsTitle,
-            res.date,
-            res.year,
-            res.airedDate,
-            res.season,
-            res.episode,
-            subtitleCallback,
-            callback,
-            1
-        )
-
-        //val malId = res.malId
-        //val episode = res.episode
-        //val jpTitle = res.jpTitle
-        //val year=res.year
-        //val malsync = app.get("$malsyncAPI/mal/anime/$malId").parsedSafe<MALSyncResponses>()?.sites
-        //val zoro = malsync?.zoro
-        //val zorotitle = zoro?.values?.firstNotNullOfOrNull { it["title"] }?.replace(":", " ")
-        //val hianimeUrl = zoro?.values?.firstNotNullOfOrNull { it["url"] }
-        //val kaasSlug = malsync?.KickAssAnime?.values?.firstNotNullOfOrNull { it["identifier"] }
-        //val animepaheUrl = malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }
-
-        //runAllAsync(
-        //    animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) },
-        //    { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
-        //    { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback) },
-        //    { invokeAnizone(jpTitle, episode, callback) },
-        //    { invokeHianime(zoro?.keys?.toList(), hianimeUrl, episode, subtitleCallback, callback) },
+        //invokeAnimes(
+        //    res.title,
+        //    res.jpTitle,
+        //    res.epsTitle,
+        //    res.date,
+        //    res.year,
+        //    res.airedDate,
+        //    res.season,
+        //    res.episode,
+        //    subtitleCallback,
+        //    callback
         //)
+
+        val malId = res.malId
+        val episode = res.episode
+        val jpTitle = res.jpTitle
+        val year=res.year
+        val malsync = app.get("$malsyncAPI/mal/anime/$malId").parsedSafe<MALSyncResponses>()?.sites
+        val zoro = malsync?.zoro
+        val zorotitle = zoro?.values?.firstNotNullOfOrNull { it["title"] }?.replace(":", " ")
+        val hianimeUrl = zoro?.values?.firstNotNullOfOrNull { it["url"] }
+        val kaasSlug = malsync?.KickAssAnime?.values?.firstNotNullOfOrNull { it["identifier"] }
+        val animepaheUrl = malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }
+
+        animeKaiDone = CompletableDeferred()
+        animePaheDone = CompletableDeferred()
+
+        runAllAsync(
+            { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback, 1) },
+            animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) },
+            { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
+            { invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
+            { kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
+        )
         return true
     }
 

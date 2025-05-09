@@ -846,8 +846,7 @@ object StreamPlayExtractor : StreamPlay() {
         season: Int? = null,
         episode: Int? = null,
         subtitleCallback: (SubtitleFile) -> Unit,
-        callback: (ExtractorLink) -> Unit,
-        type: Int = 0
+        callback: (ExtractorLink) -> Unit
     ) {
         val (aniId, malId) = convertTmdbToAnimeId(
             title, date, airedDate, if (season == null) TvType.AnimeMovie else TvType.Anime
@@ -876,23 +875,14 @@ object StreamPlayExtractor : StreamPlay() {
         val tmdbYear = date?.substringBefore("-")?.toIntOrNull()
         val jptitleSlug = jptitle.createSlug()
 
-        if (type != 0) {
-            if (animeKaiDone == null || animeKaiDone!!.isCompleted) animeKaiDone = CompletableDeferred()
-            if (animePaheDone == null || animePaheDone!!.isCompleted) animePaheDone = CompletableDeferred()
-        }
-
         runAllAsync(
-            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
-            { if (type != 2) {
-                    if (type == 0) animePaheDone?.complete(Unit)
-                    animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) }
-              }
-            },
-            { if (type != 1) invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
-            { if (type != 1) invokeAnizone(jptitle, episode, callback) },
-            { if (type != 2) invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
-            { if (type != 2) invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
-            { if (type != 2) kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
+            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, 0) } },
+            { animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } },
+            { invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
+            { invokeAnizone(jptitle, episode, callback) },
+            { invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
+            { invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
+            { kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
         )
 
 
