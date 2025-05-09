@@ -110,6 +110,13 @@ val providerCountMap = mutableMapOf<String, Int>()
 val identifierMap = mutableMapOf<String, String>()
 val mapMutex = Mutex()
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class AnimeData(
+    @JsonProperty("titles") val titles: Map<String, String>? = null,
+    @JsonProperty("images") val images: List<ImageData>? = null,
+    @JsonProperty("episodes") val episodes: Map<String, EpisodeData>? = null
+)
+
 fun Document.getMirrorLink(): String? {
     return this.select("div.mb-4 a").randomOrNull()
         ?.attr("href")
@@ -2611,7 +2618,6 @@ fun generateVidsrcVrf(n: Int?): String {
     val encryptedHex = encrypted.joinToString("") { "%02x".format(it) }
     return "$ivHex:$encryptedHex"
 }
-
 
 internal class AnimekaiDecoder {
     private val keysChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-~!*().'"
