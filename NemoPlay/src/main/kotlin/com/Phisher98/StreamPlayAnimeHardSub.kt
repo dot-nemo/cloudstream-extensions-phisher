@@ -253,7 +253,7 @@ class StreamPlayAnimeHardSub : MainAPI() {
             res.episode,
             subtitleCallback,
             callback,
-            "hardsub"
+            1
         )
 
         //val malId = res.malId

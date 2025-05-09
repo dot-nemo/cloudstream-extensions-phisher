@@ -253,7 +253,7 @@ class StreamPlayAnimeSoftSub : MainAPI() {
             res.episode,
             subtitleCallback,
             callback,
-            "softsub"
+            2
         )
 
         //val malId = res.malId
