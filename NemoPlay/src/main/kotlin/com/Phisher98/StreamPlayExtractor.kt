@@ -881,7 +881,7 @@ object StreamPlayExtractor : StreamPlay() {
         }
 
         runAllAsync(
-            // { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
+            { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
             { if (type != "hardsub") invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { if (type != "hardsub") invokeAnizone(jptitle, episode, callback) },
             { if (type != "softsub") {
