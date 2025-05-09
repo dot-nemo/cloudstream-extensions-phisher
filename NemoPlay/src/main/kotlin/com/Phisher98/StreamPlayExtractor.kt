@@ -880,7 +880,7 @@ object StreamPlayExtractor : StreamPlay() {
             { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
             { if (type != "hardsub") invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
             { if (type != "hardsub") invokeAnizone(jptitle, episode, callback) },
-            { if (type != "softsub") animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } },
+            { if (type == "hardsub") animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) } else animePaheDone.complete(Unit) },
             { if (type != "softsub") invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
             { if (type != "softsub") invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
             { if (type != "softsub") kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
