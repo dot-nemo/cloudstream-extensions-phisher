@@ -883,7 +883,7 @@ object StreamPlayExtractor : StreamPlay() {
             if (animePaheDone == null || animePaheDone!!.isCompleted) animePaheDone = CompletableDeferred()
         }
 
-        Log.d("nemo", type)
+        Log.d("nemo", type ?: "null")
 
         runAllAsync(
             // { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
