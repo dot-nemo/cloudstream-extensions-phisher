@@ -1418,6 +1418,7 @@ object StreamPlayExtractor : StreamPlay() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
+        Log.d("nemo", "hianime")
         val headers = mapOf(
             "X-Requested-With" to "XMLHttpRequest",
         )
