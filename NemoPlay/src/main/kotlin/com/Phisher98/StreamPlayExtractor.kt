@@ -875,6 +875,9 @@ object StreamPlayExtractor : StreamPlay() {
         val gogoUrl = malsync?.Gogoanime?.values?.firstNotNullOfOrNull { it["url"] }
         val tmdbYear = date?.substringBefore("-")?.toIntOrNull()
         val jptitleSlug = jptitle.createSlug()
+
+        animeKaiDone?.complete(Unit)
+
         if (type != null) {
             // if (animeKaiDone == null || animeKaiDone!!.isCompleted) animeKaiDone = CompletableDeferred()
             if (animePaheDone == null || animePaheDone!!.isCompleted) animePaheDone = CompletableDeferred()
@@ -889,9 +892,9 @@ object StreamPlayExtractor : StreamPlay() {
                     animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) }
               }
             },
-            // { if (type != "softsub") invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
-            // { if (type != "softsub") invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
-            // { if (type != "softsub") kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
+            { if (type != "softsub") invokeAnichi(jptitle,year,episode, subtitleCallback, callback) },
+            { if (type != "softsub") invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
+            { if (type != "softsub") kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
         )
 
 
@@ -965,10 +968,12 @@ object StreamPlayExtractor : StreamPlay() {
                                 val host = server.link.getHost()
                                 when {
                                     source.sourceName.contains("Default") && (server.resolutionStr == "SUB" || server.resolutionStr == "Alt vo_SUB") -> {
+                                        animeKaiDone?.await()
+                                        animePaheDone?.await()
                                         getM3u8Qualities(
                                             server.link,
                                             "https://static.crunchyroll.com/",
-                                            host
+                                            "⌜ AllAnime ⌟ | ${host.capitalize()}"
                                         ).forEach(callback)
                                     }
 
@@ -977,8 +982,8 @@ object StreamPlayExtractor : StreamPlay() {
                                         animePaheDone?.await()
                                         callback.invoke(
                                             newExtractorLink(
-                                                "⌜ AllAnime ⌟ | ${host.uppercase()}",
-                                                "⌜ AllAnime ⌟ | ${host.uppercase()}",
+                                                "⌜ AllAnime ⌟ | ${host.capitalize()}",
+                                                "⌜ AllAnime ⌟ | ${host.capitalize()}",
                                                 server.link,
                                                 INFER_TYPE
                                             )
@@ -993,8 +998,9 @@ object StreamPlayExtractor : StreamPlay() {
                                                 (if (URI(server.link).host.isNotEmpty())
                                                     server.link
                                                 else "https://allanime.day" + URI(server.link).path)
-
-                                        getM3u8Qualities(server.link, server.headers?.referer ?: endpoint, host).forEach(callback)
+                                        animeKaiDone?.await()
+                                        animePaheDone?.await()
+                                        getM3u8Qualities(server.link, server.headers?.referer ?: endpoint, "⌜ AllAnime ⌟ | ${host.capitalize()}").forEach(callback)
                                     }
 
                                     else -> {
