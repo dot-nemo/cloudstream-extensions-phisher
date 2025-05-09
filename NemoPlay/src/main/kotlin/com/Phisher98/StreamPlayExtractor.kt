@@ -887,7 +887,11 @@ object StreamPlayExtractor : StreamPlay() {
 
         runAllAsync(
             // { malId?.let { invokeAnimeKai(jptitle,zorotitle,it, episode, subtitleCallback, callback, type) } },
-            { if (type == "softsub" || type == null) invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback) },
+            { if (type == "softsub" || type == null) {
+                Log.d("nemo", "hianime")
+                invokeHianime(zoroIds, hianimeUrl, episode, subtitleCallback, callback)
+                }
+            },
             { if (type == "softsub" || type == null) invokeAnizone(jptitle, episode, callback) },
             { if (type == "hardsub" || type == null) {
                     if (type == null) animePaheDone?.complete(Unit)
