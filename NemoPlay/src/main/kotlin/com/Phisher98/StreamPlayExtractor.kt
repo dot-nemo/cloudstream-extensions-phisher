@@ -1467,6 +1467,8 @@ object StreamPlayExtractor : StreamPlay() {
                                 "Origin" to "https://megacloud.club/"
                             )
                             if (dubtype.equals("sub", ignoreCase = true)) {
+
+                                Log.d("nemo", "hianime wait")
                                 animeKaiDone?.await()
                                 animePaheDone?.await()
                                 M3u8Helper.generateM3u8(
@@ -1475,6 +1477,7 @@ object StreamPlayExtractor : StreamPlay() {
                                     mainUrl,
                                     headers = m3u8headers
                                 ).forEach(callback)
+                                Log.d("nemo", "hianime")
                             }
                         }
 
