@@ -264,7 +264,11 @@ class StreamPlayAnimeHardSub : MainAPI() {
 
         runAllAsync(
             { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback, 1) },
-            animepaheUrl?.let { invokeAnimepahe(it, episode, subtitleCallback, callback) },
+            {
+                malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }?.let {
+                    invokeAnimepahe(it, episode, subtitleCallback, callback)
+                }
+            },
             { invokeAnichi(jpTitle,year,episode, subtitleCallback, callback) },
             { invokeAnimeOwl(zorotitle, episode, subtitleCallback, callback) },
             { kaasSlug?.let { invokeKickAssAnime(it, episode, subtitleCallback, callback) } },
