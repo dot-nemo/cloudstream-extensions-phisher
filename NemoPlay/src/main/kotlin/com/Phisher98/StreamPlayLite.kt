@@ -32,6 +32,7 @@ import com.nemo.StreamPlayExtractor.invokeWyZIESUBAPI
 import com.nemo.StreamPlayExtractor.sharedPref
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.argamap
+import com.lagradost.cloudstream3.runAllAsync
 import com.lagradost.cloudstream3.utils.AppUtils
 import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.nemo.StreamPlayExtractor.invokeXPrimeAPI
@@ -49,7 +50,7 @@ class StreamPlayLite() : StreamPlay(sharedPref) {
     ): Boolean {
         val token = sharedPref?.getString("token", null)
         val res = AppUtils.parseJson<LinkData>(data)
-        argamap(
+        runAllAsync(
             {
                 if (!res.isAnime) invokeVidsrcsu(
                     res.id,
