@@ -47,7 +47,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.Calendar
 import kotlin.math.roundToInt
-import kotlinx.coroutines.CompletableDeferred
 
 class StreamPlayAnimeHardSub : MainAPI() {
     override var name = "NemoPlay-Anime/HardSub"
@@ -262,9 +261,6 @@ class StreamPlayAnimeHardSub : MainAPI() {
         val hianimeUrl = zoro?.values?.firstNotNullOfOrNull { it["url"] }
         val kaasSlug = malsync?.KickAssAnime?.values?.firstNotNullOfOrNull { it["identifier"] }
         val animepaheUrl = malsync?.animepahe?.values?.firstNotNullOfOrNull { it["url"] }
-
-        animeKaiDone = CompletableDeferred()
-        animePaheDone = CompletableDeferred()
 
         runAllAsync(
             { invokeAnimeKai(jpTitle,zorotitle,malId, episode, subtitleCallback, callback, 1) },

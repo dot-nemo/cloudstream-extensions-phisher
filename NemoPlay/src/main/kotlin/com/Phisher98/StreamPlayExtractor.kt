@@ -1041,6 +1041,7 @@ object StreamPlayExtractor : StreamPlay() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
+        if (animePaheDone == null || animePaheDone!!.completed) animePaheDone = CompletableDeferred()
         val headers = mapOf("Cookie" to "__ddg2_=1234567890")
         val id = app.get(url, headers).document.selectFirst("meta[property=og:url]")
             ?.attr("content").toString().substringAfterLast("/")
@@ -1224,6 +1225,7 @@ object StreamPlayExtractor : StreamPlay() {
         callback: (ExtractorLink) -> Unit,
         type: Int = 0
     ) {
+        if (animeKaiDone == null || animeKaiDone!!.completed) animeKaiDone = CompletableDeferred()
         if (jptitle.isNullOrBlank() || title.isNullOrBlank()) return
 
         try {
