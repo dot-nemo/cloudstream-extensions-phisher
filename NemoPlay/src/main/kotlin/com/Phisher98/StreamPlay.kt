@@ -29,7 +29,6 @@ import com.nemo.StreamPlayExtractor.invokeMoviesmod
 import com.nemo.StreamPlayExtractor.invokeMultiEmbed
 import com.nemo.StreamPlayExtractor.invokeMultimovies
 import com.nemo.StreamPlayExtractor.invokeNepu
-import com.nemo.StreamPlayExtractor.invokeNinetvinvokeNowTv
 import com.nemo.StreamPlayExtractor.invokePlaydesi
 import com.nemo.StreamPlayExtractor.invokePlayer4U
 import com.nemo.StreamPlayExtractor.invokePrimeWire
@@ -649,15 +648,6 @@ open class StreamPlay(val sharedPref: SharedPreferences? = null) : TmdbProvider(
             subtitleCallback
         )
          */
-    },
-    {
-        if (!res.isAnime) invokeNinetv(
-            res.id,
-            res.season,
-            res.episode,
-            subtitleCallback,
-            callback
-        )
     },
     {
         invokeDahmerMovies(dahmerMoviesAPI,res.title, res.year, res.season, res.episode, callback)
