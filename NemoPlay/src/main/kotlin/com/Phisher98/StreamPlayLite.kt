@@ -238,12 +238,10 @@ class StreamPlayLite() : StreamPlay(sharedPref) {
                 )
             },
             {
-                if (!res.isAnime) invokeRiveStream(
+                invokeRiveStream(
                     res.id,
-                    res.year,
                     res.season,
                     res.episode,
-                    subtitleCallback,
                     callback
                 )
 
