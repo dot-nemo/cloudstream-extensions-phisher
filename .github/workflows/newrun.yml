@@ -144,6 +144,7 @@ jobs:
           ./gradlew ensureJarCompatibility
           cp **/build/*.cs3 $GITHUB_WORKSPACE/builds
           cp build/plugins.json $GITHUB_WORKSPACE/builds
+          cp local.properties $GITHUB_WORKSPACE/builds
 
       - name: Push builds
         run: |
